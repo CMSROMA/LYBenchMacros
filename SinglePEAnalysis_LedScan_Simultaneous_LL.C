@@ -83,6 +83,8 @@ struct GlobalChi2 {
   std::vector< ROOT::Math::IMultiGenFunction* > f_;
 };
 
+TString plotsDir = "~/cernbox/www/plots/LYBench/";
+
 Double_t PMTFunction(Double_t *x, Double_t *par)
 {
 
@@ -309,8 +311,9 @@ void SinglePEAnalysis_LedScan_Simultaneous_LL()
       out->cd();
       adcData[i]->Write(Form("adcData_led%d",led[i]));
       f->Write();
-      c->Write(Form("singlePEfit_led%d.pdf",led[i]));
-      c->SaveAs(Form("singlePEfit_led%d.pdf",led[i]));
+      c->Write(Form("singlePEfit_led%d.root",led[i]));
+      c->SaveAs(Form("%s/singlePEfit_led%d.pdf",plotsDir.Data(),led[i]));
+      c->SaveAs(Form("%s/singlePEfit_led%d.png",plotsDir.Data(),led[i]));
     }
 
 
@@ -318,13 +321,14 @@ void SinglePEAnalysis_LedScan_Simultaneous_LL()
   TGraphErrors* muVsLed=new TGraphErrors(7,x,mu,x_err,mu_err);
   muVsLed->SetMarkerStyle(20);
   muVsLed->SetMarkerSize(1.1);
-  muVsLed->GetXaxis()->SetTitle("Led (V)");
+  muVsLed->GetXaxis()->SetTitle("Led Amplitude (mV)");
   muVsLed->GetYaxis()->SetTitle("#mu");
   muVsLed->GetYaxis()->SetRangeUser(0,7);
   muVsLed->Draw("APE");
   muVsLed->Fit("pol2");
   //  muVsLed->Write();
   
-  c->SaveAs("muVsLed.pdf");
+  c->SaveAs(Form("%s/muVsLed.pdf",plotsDir.Data()));
+  c->SaveAs(Form("%s/muVsLed.png",plotsDir.Data()));
   out->Write();
 }

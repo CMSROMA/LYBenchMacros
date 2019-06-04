@@ -29,7 +29,7 @@
   averageTriggered->SetLineWidth(4);
   averageTriggered->Draw("PSAME");
 
-
+  //now fit the shape
   TF1* f2=new TF1("f2","[0]*((1-[4])*(TMath::Exp((-2*[1]*(x-[3])+[2]*[2])/2/[1]/[1])*(1-TMath::Erf((-[1]*(x-[3])+[2]*[2])/(TMath::Sqrt(2)*[1]*[2])))) + [4]* TMath::Exp((-2*[1]*(x-[3])+[5]*[5])/2/[1]/[1])*(1-TMath::Erf((-[1]*(x-[3])+[5]*[5])/(TMath::Sqrt(2)*[1]*[5]))))",0,500);
   f2->SetParameter(3,50);
   f2->SetParLimits(3,10,100);
@@ -58,32 +58,9 @@
   frame->GetYaxis()->SetTitle("Amplitude (mv)");
   frame->GetXaxis()->SetTitle("Time (ns)");
 
-  c1->SaveAs("eventsTriggered.pdf");
+  TString plotsDir = "~/cernbox/www/plots/LYBench/";
 
-  max=-999;
-  frame=0;
-  for(int iev=0;iev<20;++iev)
-    {
-      TH1F* event=(TH1F*)_file0->Get(Form("events/event_%d",iev));
-      if (iev==0)
-	{
-	  event->Draw();
-	  frame=event;
-	}
-      else
-      	event->Draw("SAME");
-      if (event->GetBinContent(event->GetMaximumBin())>max)
-	max=event->GetBinContent(event->GetMaximumBin());
-    }
-  frame->SetMaximum(max*1.2);
-  frame->GetXaxis()->SetRangeUser(0,300);
-  TH1F* average=(TH1F*)_file0->Get("full");
-  average->SetLineColor(kRed);
-  average->SetMarkerColor(kRed);
-  average->SetMarkerSize(0.4);
-  average->SetMarkerStyle(20);
-  average->SetLineWidth(4);
-  average->Draw("PSAME");
-  c1->SaveAs("events.pdf");
+  c1->SaveAs(plotsDir+"eventsTriggered.pdf");
+  c1->SaveAs(plotsDir+"eventsTriggered.png");
 
 }
