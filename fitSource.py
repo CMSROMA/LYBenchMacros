@@ -1,5 +1,6 @@
 import ROOT as R
 import math as m
+import numpy as np
 import time
 import os
 
@@ -187,3 +188,43 @@ text.DrawLatexNDC(0.13,0.87,"Run time: %s UTC"%(runTime))
 
 for ext in ['png','pdf','root']:
     c.SaveAs(args.output+"/chargeFit_"+ runID +"."+ext)
+
+#linearity only if feasible
+if (peak<20000):
+    fitADC = np.empty(3, np.dtype('float64'))
+    fitADC[0]=fTot.GetParameter(10)
+    fitADC[1]=fTot.GetParameter(2)
+    fitADC[2]=fTot.GetParameter(4)
+    fitADC_err = np.empty(3, np.dtype('float64'))
+    fitADC_err[0]=fTot.GetParError(10)
+    fitADC_err[1]=2000
+    fitADC_err[2]=fTot.GetParError(4)
+    energy = np.empty(3, np.dtype('float64'))
+    energy[0] = 0.511
+    energy[1] = 1.2745*(1-1./(1+(2*1.2745)/0.511))
+    energy[2] = 1.2745
+    energy_err = np.full(3, 0., np.dtype('float64')) #10mv Error?
+
+# calling the TGraph constructor
+    frame=R.TH2F('frame','frame',10,0,1.5,10,-1000,40000)
+    frame.Draw()
+    lyFit=R.TF1("lyFit","[0]+[1]*x",0,1.5)
+    linearity =R.TGraphErrors(len(fitADC[:]),energy[:],fitADC[:],energy_err[:],fitADC_err[:])
+    linearity.Draw('PSAME')
+    linearity.SetMarkerStyle(20)
+    linearity.SetMarkerSize(1.2)
+    linearity.Fit("lyFit","R+","",0,1.5)
+
+    frame.GetXaxis().SetTitle("Energy [MeV]")
+    frame.GetYaxis().SetTitle("Charge [ADC]")
+
+    text.SetTextSize(0.04)
+    text.DrawLatexNDC(0.2,0.7,"LY (Preliminary): %5.1f #pm %3.1f pe/MeV"%(lyFit.GetParameter(1)/pe,R.TMath.Sqrt(R.TMath.Power(lyFit.GetParameter(1)/pe*0.02,2)+R.TMath.Power(lyFit.GetParError(1)/pe,2))))
+    text.SetTextSize(0.03)
+    text.DrawLatexNDC(0.12,0.91,"Run ID: %s"%(runID))
+    text.SetTextSize(0.02)
+    text.DrawLatexNDC(0.13,0.87,"Run time: %s UTC"%(runTime))
+
+    for ext in ['png','pdf','root']:
+        c.SaveAs(args.output+"/linearity_"+ runID +"."+ext)
+
