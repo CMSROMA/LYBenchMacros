@@ -1,5 +1,6 @@
 import ROOT as R
 import math as m
+import time
 import os
 
 R.gROOT.SetBatch(1)
@@ -15,8 +16,19 @@ f=R.TFile(args.input)
 
 charge=R.TH1F("charge","charge",1000,1000,101000)
 
+#Very preliminary calibration to be updated (eg passed as parameter?)
+pe=21
+
 h4=f.Get("h4")
+
+if (h4.GetEntries()<=0):
+    print("Empty input tree!")
+
 h4.Project("charge","charge_tot[C0]")
+
+h4.GetEntry(1)
+ts=h4.time_stamps[1]
+runTime=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ts))
 
 #get some inputs from the spectrum to set the par limits
 peak=charge.GetBinCenter(charge.GetMaximumBin())
@@ -27,7 +39,7 @@ if (peak>20000):
     fBkg=R.TF1("fBkg","[0]*(1./(1+TMath::Exp([1]*(x-[2])))+[3]*TMath::Gaus(x,[4],[5])+[6]/(1+TMath::Exp([7]*(x-[8])))+[9]*TMath::Gaus(x,[10],[11])+[12]*TMath::Gaus(x,[13],[14]))",0,100000)
     fTot.SetNpx(100000)
     fBkg.SetNpx(100000)
-
+#Normalisation 
     fTot.SetParameter(0,norm*0.3)
     fTot.SetParLimits(0,norm*0.1,norm)
 #1274 KeV compton 
@@ -35,7 +47,7 @@ if (peak>20000):
     fTot.SetParLimits(1,0.0005,0.003)
     fTot.SetParameter(2,1.7*peak)
     fTot.SetParLimits(2,1.5*peak,1.9*peak)
-#1274 KeV "photo-electric" 
+#1274 KeV "photo-electric", in the high range this is saturated 
     fTot.SetParameter(3,2.)
     fTot.SetParLimits(3,0.5,3.)
     fTot.SetParameter(4,2*peak)
@@ -63,7 +75,7 @@ if (peak>20000):
     fTot.SetParLimits(13,0.2*peak,0.4*peak)
     fTot.SetParameter(14,0.05*peak)
     fTot.SetParLimits(14,0.02*peak,0.15*peak)
-#1274 KeV backscatter peak??
+#1274 KeV backscatter peak?? (should not bee too far from the 511 KeV compton edge...)
     fTot.SetParameter(15,2.)
     fTot.SetParLimits(15,0,10)
     fTot.SetParameter(16,2*0.3*peak)
@@ -121,6 +133,7 @@ elif peak<10000:
 else:
     print("Intermediate conditions still to be studied")
 
+R.gStyle.SetOptTitle(0)
 R.gStyle.SetOptStat(0)
 R.gStyle.SetOptFit(1111111)
 R.gStyle.SetStatH(0.09)
@@ -146,6 +159,8 @@ else:
         fBkg.SetParameter(9+ip,fTot.GetParameter(14+ip))
         
 charge.GetXaxis().SetRangeUser(0.2*peak,min(peak*3,100000))
+charge.GetXaxis().SetTitle("Charge [ADC]")
+charge.GetYaxis().SetTitle("Entries/%d ADC"%charge.GetBinWidth(1))
 
 fBkg.SetLineColor(R.kGreen)
 fBkg.SetLineWidth(6)
@@ -154,5 +169,21 @@ fBkg.Draw("SAME")
 charge.GetFunction("fTot").Draw("SAME")
 charge.Draw("PESAME")
 
+runID=os.path.splitext(os.path.basename(args.input))[0]
+
+if 'h4Reco_' in runID:
+    runID=runID.split('h4Reco_')[1]
+
+text=R.TLatex()
+text.SetTextSize(0.03)
+#text.DrawLatexNDC(0.485,0.4,"511 KeV Peak: %.4e #pm %.2e"%(fTot.GetParameter(10),fTot.GetParError(10)))
+text.DrawLatexNDC(0.485,0.365,"LY (Preliminary): %5.1f #pm %3.1f pe/MeV"%(fTot.GetParameter(10)/pe/0.511,R.TMath.Sqrt(R.TMath.Power(fTot.GetParameter(10)/pe/0.511*0.02,2)+R.TMath.Power(fTot.GetParError(10)/pe/0.511,2))))
+text.DrawLatexNDC(0.485,0.33,"511 KeV Resolution: %3.1f %%"%(fTot.GetParameter(11)/fTot.GetParameter(10)*100))
+
+text.SetTextSize(0.03)
+text.DrawLatexNDC(0.12,0.91,"Run ID: %s"%(runID))
+text.SetTextSize(0.02)
+text.DrawLatexNDC(0.13,0.87,"Run time: %s UTC"%(runTime))
+
 for ext in ['png','pdf','root']:
-    c.SaveAs(args.output+"/chargeFit_"+ os.path.splitext(os.path.basename(args.input))[0] +"."+ext)
+    c.SaveAs(args.output+"/chargeFit_"+ runID +"."+ext)
