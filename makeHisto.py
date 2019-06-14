@@ -49,14 +49,14 @@ h4.Project("spill","spill")
 
 if (not args.longRun):
     if (args.runType != "led" and args.runType !="ped" ):
-        histos['charge']=R.TH1F("charge","charge",1000,0,100000)
+        histos['charge_spill0']=R.TH1F("charge_spill0","charge_spill0",1000,1000,101000)
     else:
-        histos['charge']=R.TH1F("charge","charge",1000,-50,450)
-    histos['tBench']=R.TH1F("tBench","tBench",1000,15.,25.)
-    histos['tLab']=R.TH1F("tLab","tLab",1000,15.,25.)
+        histos['charge_spill0']=R.TH1F("charge_spill0","charge_spill0",1000,-50,450)
+    histos['tBench_spill0']=R.TH1F("tBench_spill0","tBench_spill0",1000,15.,25.)
+    histos['tLab_spill0']=R.TH1F("tLab_spill0","tLab_spill0",1000,15.,25.)
 
 for ievent,event in enumerate(h4):
-    key=""
+    key="_spill0"
     if (args.longRun):
         key="_spill"+str(event.spill)
         if "charge"+key not in histos.keys():
@@ -78,7 +78,7 @@ for ievent,event in enumerate(h4):
     histos['charge'+key].Fill(event.charge_tot[event.C0])
 
 if (not args.longRun):
-    print "Average temperature during run: %4.2f"%(histos['tBench'].GetMean())
+    print "Average temperature during run: %4.2f"%(histos['tBench_spill0'].GetMean())
 
 print "Saving histograms to "+args.output
 fOut=R.TFile(args.output,"RECREATE")
