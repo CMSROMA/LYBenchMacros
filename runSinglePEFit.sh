@@ -49,14 +49,20 @@ mkdir -p SinglePEAnalysis
 
 if [ $long -eq 1 ]; then
     if [ $fromHistos -eq 0 ]; then
-	root -l -b -q SinglePEAnalysis_longRun.C+\(\"$inputFile\",1,0\)
+	root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/ntuples/h4Reco_$inputFile.root\",1,0\)
     else
-	root -l -b -q SinglePEAnalysis_longRun.C+\(\"$inputFile\",1,1\)
+	if [ ! -f "/data/cmsdaq/led/histos/histos_${inputFile}.root" ]; then
+	    python makeHisto.py --input=/data/cmsdaq/led/ntuples/h4Reco_${inputFile}.root --output=/data/cmsdaq/led/histos/histos_${inputFile}.root --inputEnvData=/data/cmsdaq/slowControl/temperatures  --runType=led --longRun
+	fi
+	root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/histos/histos_$inputFile.root\",1,1\)
     fi
 else
     if [ $fromHistos -eq 0 ]; then
-	root -l -b -q SinglePEAnalysis_longRun.C+\(\"$inputFile\",0,0\)
+	root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/ntuples/h4Reco_$inputFile.root\",0,0\)
     else
-	root -l -b -q SinglePEAnalysis_longRun.C+\(\"$inputFile\",0,1\)
+	if [ ! -f "/data/cmsdaq/led/histos/histos_${inputFile}.root" ]; then
+	    python makeHisto.py --input=/data/cmsdaq/led/ntuples/h4Reco_${inputFile}.root --output=/data/cmsdaq/led/histos/histos_${inputFile}.root --inputEnvData=/data/cmsdaq/slowControl/temperatures  --runType=led
+	fi
+	root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/ntuples/histos_$inputFile.root\",0,1\)
     fi
 fi

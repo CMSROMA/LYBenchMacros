@@ -1,6 +1,8 @@
 import ROOT as R
 from root_pandas import read_root
 
+import time
+
 R.gROOT.SetBatch(1)
 
 import argparse
@@ -35,7 +37,6 @@ class TempData:
         return self.df.iloc[self.df.index.get_loc(timeStamp,method='nearest')]['tlab']
 
 
-tData=TempData(args.inputEnvData)
 
 data=R.TFile(args.inputData)
 h4=data.Get("h4")
@@ -47,6 +48,9 @@ histos['spill']=R.TH1F("spill","spill",200,-0.5,199.5);
 
 h4.Project("spill","spill")
 
+
+
+
 if (not args.longRun):
     if (args.runType != "led" and args.runType !="ped" ):
         histos['charge_spill0']=R.TH1F("charge_spill0","charge_spill0",1000,1000,101000)
@@ -54,6 +58,10 @@ if (not args.longRun):
         histos['charge_spill0']=R.TH1F("charge_spill0","charge_spill0",1000,-50,450)
     histos['tBench_spill0']=R.TH1F("tBench_spill0","tBench_spill0",1000,15.,25.)
     histos['tLab_spill0']=R.TH1F("tLab_spill0","tLab_spill0",1000,15.,25.)
+
+h4.GetEntry(1)
+
+lastDate=""
 
 for ievent,event in enumerate(h4):
     key="_spill0"
@@ -69,8 +77,14 @@ for ievent,event in enumerate(h4):
         
     if (ievent%100==0):
         print "Analysing event %d"%ievent
+        ts=event.time_stamps[1]
+        eventDate=time.strftime('%Y_%m_%d', time.localtime(ts))
+
+        if (eventDate != lastDate):
+            lastDate=eventDate
+            tData=TempData(args.inputEnvData+"/LYBenchTempData_"+eventDate+".root")
     #fill environmental data histograms only every 100 events
-    #get closest value of environmental data 
+    #get closest value of environmental data  
         t=tData.closestValues(event.time_stamps[1])
         histos['tBench'+key].Fill(float(t['tbench']))
         histos['tLab'+key].Fill(float(t['tlab']))
