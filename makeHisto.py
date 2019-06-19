@@ -44,7 +44,7 @@ h4=data.Get("h4")
 histos={}
 
 histos={}
-histos['spill']=R.TH1F("spill","spill",200,-0.5,199.5);
+histos['spill']=R.TH1F("spill","spill",200,-0.5,199.5)
 
 h4.Project("spill","spill")
 
