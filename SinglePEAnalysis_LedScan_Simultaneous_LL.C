@@ -30,7 +30,7 @@
 //#include "Style.C"
 
 #define START_ORDER 0
-#define NORDERS 15
+#define NORDERS 24
 
 #define OFFSET 755
 struct FitResults {
@@ -83,7 +83,7 @@ struct GlobalChi2 {
   std::vector< ROOT::Math::IMultiGenFunction* > f_;
 };
 
-TString plotsDir = "~/cernbox/www/plots/LYBench/";
+TString plotsDir = "SinglePEAnalysis";
 
 Double_t PMTFunction(Double_t *x, Double_t *par)
 {
@@ -168,10 +168,10 @@ FitResults fitSimultaneous( std::vector<TH1F*> histos, double xMin, double xMax 
 
   GlobalChi2 globalChi2(chi2);
 
-  par0[2*nHistos]=21.7; //Q1
-  par0[2*nHistos+1]=14; //Q1 sigma
-  par0[2*nHistos+2]=29; 
-  par0[2*nHistos+3]=4.1; 
+  par0[2*nHistos]=17; //Q1
+  par0[2*nHistos+1]=10; //Q1 sigma
+  par0[2*nHistos+2]=45; 
+  par0[2*nHistos+3]=5  ; 
   par0[2*nHistos+4]=-1.5; 
 
   // create before the parameter settings in order to fix or set range on them
@@ -181,12 +181,12 @@ FitResults fitSimultaneous( std::vector<TH1F*> histos, double xMin, double xMax 
   //fitter.Config().ParSettings(4).Fix();
 
   for (int ifun=0;ifun<nHistos;++ifun)
-    fitter.Config().ParSettings(2*ifun+1).SetLimits(0.1, 5);
+    fitter.Config().ParSettings(2*ifun+1).SetLimits(0.1, 10);
   
-  fitter.Config().ParSettings(2*nHistos).SetLimits(15,30);
-  fitter.Config().ParSettings(2*nHistos+1).SetLimits(10,20);
-  fitter.Config().ParSettings(2*nHistos+2).SetLimits(25,32);
-  fitter.Config().ParSettings(2*nHistos+3).SetLimits(3.5,4.5);
+  fitter.Config().ParSettings(2*nHistos).SetLimits(15,25);
+  fitter.Config().ParSettings(2*nHistos+1).SetLimits(7,20);
+  fitter.Config().ParSettings(2*nHistos+2).SetLimits(35,60);
+  fitter.Config().ParSettings(2*nHistos+3).SetLimits(3.5, 8.);
   fitter.Config().ParSettings(2*nHistos+4).SetLimits(-5.,0.);
 
   ROOT::Math::MinimizerOptions fitopt;
@@ -220,36 +220,48 @@ FitResults fitSimultaneous( std::vector<TH1F*> histos, double xMin, double xMax 
   return fr;
 }
 
-void SinglePEAnalysis_LedScan_Simultaneous_LL()
+void SinglePEAnalysis_LedScan_Simultaneous_LL(TString inputDir)
 {
+  // TString baseName(gSystem->BaseName(inputFile.Data()));
+  // TString fileName;
+  // TString runId;
+  // Ssiz_t from = 0;
+  // baseName.Tokenize(fileName, from, ".root");
+  // from=0;
+  // TString tok;
+  // from = 0;
+  // while (fileName.Tokenize(tok, from, "h4Reco_")) {
+  //   runId=tok;
+  // }
+
   TCanvas *c=new TCanvas("c","c",800,700);
   TFile* out=TFile::Open("SinglePEAnalysis_ledScan.root","RECREATE");
   //  TFile *f=TFile::Open("h4Reco_test100kevents.root");
 
-  int led[7];
-  int led_err[7];
+  int led[8];
+  int led_err[8];
 
-  double x[7];
-  double x_err[7];
-  double pe[7];
-  double pe_err[7];
-  double gain[7];
-  double gain_err[7];
-  double peres[7];
-  double peres_err[7];
-  double mu[7];
-  double mu_err[7];
+  double x[8];
+  double x_err[8];
+  double pe[8];
+  double pe_err[8];
+  double gain[8];
+  double gain_err[8];
+  double peres[8];
+  double peres_err[8];
+  double mu[8];
+  double mu_err[8];
 
   std::vector<TH1F*> adcData;
-  TFile* f[7];
+  TFile* f[8];
 
-  for (int i=0;i<7;++i)
+  for (int i=0;i<5;++i)
     {
-      led[i]=4200+20*i;
+      led[i]=4180+20*i;
       led_err[i]=0;
       x[i]=led[i];
       x_err[i]=led_err[i];
-      f[i]=TFile::Open(Form("h4Reco_pmt1350led%d.root",led[i]));
+      f[i]=TFile::Open(Form("%s/h4Reco_LED-SCAN-%d.root",inputDir.Data(),led[i]));
       TTree* tree=(TTree*)f[i]->Get("h4");
       adcData.push_back(new TH1F(Form("ledData_led%d",led[i]),Form("ledData_led%d",led[i]),600,0,300));
       tree->Project(Form("ledData_led%d",led[i]),"charge_tot[C0]");
@@ -260,7 +272,7 @@ void SinglePEAnalysis_LedScan_Simultaneous_LL()
   //  std::cout << "FIT RANGE " << adcData[i]->GetMean()-3*adcData[i]->GetRMS() << "," << adcData[i]->GetMean()+3*adcData[i]->GetRMS() << std::endl;
   FitResults fr=fitSimultaneous(adcData,0,300);
       
-  for (int i=0;i<7;++i)
+  for (int i=0;i<8;++i)
     {
       pe[i]=fr.Q1;
       pe_err[i]=fr.Q1_err;
@@ -311,24 +323,24 @@ void SinglePEAnalysis_LedScan_Simultaneous_LL()
       out->cd();
       adcData[i]->Write(Form("adcData_led%d",led[i]));
       f->Write();
-      c->Write(Form("singlePEfit_led%d.root",led[i]));
+      c->Write(Form("%s/singlePEfit_led%d.root",plotsDir.Data(),led[i]));
       c->SaveAs(Form("%s/singlePEfit_led%d.pdf",plotsDir.Data(),led[i]));
-      c->SaveAs(Form("%s/singlePEfit_led%d.png",plotsDir.Data(),led[i]));
+      //      c->SaveAs(Form("%s/singlePEfit_led%d.png",plotsDir.Data(),led[i]));
     }
 
 
   c->SetLogy(0);
-  TGraphErrors* muVsLed=new TGraphErrors(7,x,mu,x_err,mu_err);
+  TGraphErrors* muVsLed=new TGraphErrors(5,x,mu,x_err,mu_err);
   muVsLed->SetMarkerStyle(20);
   muVsLed->SetMarkerSize(1.1);
   muVsLed->GetXaxis()->SetTitle("Led Amplitude (mV)");
   muVsLed->GetYaxis()->SetTitle("#mu");
-  muVsLed->GetYaxis()->SetRangeUser(0,7);
+  muVsLed->GetYaxis()->SetRangeUser(0,10);
   muVsLed->Draw("APE");
   muVsLed->Fit("pol2");
   //  muVsLed->Write();
   
   c->SaveAs(Form("%s/muVsLed.pdf",plotsDir.Data()));
-  c->SaveAs(Form("%s/muVsLed.png",plotsDir.Data()));
+  //  c->SaveAs(Form("%s/muVsLed.png",plotsDir.Data()));
   out->Write();
 }
