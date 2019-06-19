@@ -72,6 +72,8 @@ plt.grid()
 plt.legend()
 
 plt.subplots_adjust(hspace=0.35)
+for ext in ['.png','.pdf']:
+    plt.savefig('FilteredWaveform'+ext)
 #plt.show()
 
 #wf=R.TGraph(hh1.GetNbinsX(),xG,yF)
@@ -119,4 +121,5 @@ text.DrawLatexNDC(0.6,0.8,"#tau_{fit}=%4.2f#pm%3.2f ns" % (f2.GetParameter(1),f2
 wf.GetYaxis().SetTitle("Amplitude")
 wf.GetXaxis().SetTitle("Time (ns)")
 
-c.SaveAs("fitWaveform.pdf")
+for ext in ['.png','.pdf']:
+    c.SaveAs("fitWaveform"+ext)
