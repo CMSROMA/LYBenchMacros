@@ -45,7 +45,9 @@ then
   exit 1
 fi
 
-mkdir -p SinglePEAnalysis
+source ~/H4AnalysisEnv.sh
+
+mkdir -p SourceAnalysis
 
 if [ $long -eq 1 ]; then
     if [ $fromHistos -eq 0 ]; then
@@ -66,3 +68,5 @@ else
 	python fitSource.py --input=/data/cmsdaq/source/histos/histos_$inputFile.root --output=SourceAnalysis --fromHistos
     fi
 fi
+
+python fitWaveform.py --input=/data/cmsdaq/source/ntuples/h4Reco_${inputFile}.root --output=SourceAnalysis

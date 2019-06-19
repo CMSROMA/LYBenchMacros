@@ -45,6 +45,8 @@ then
   exit 1
 fi
 
+source ~/H4AnalysisEnv.sh
+
 mkdir -p SinglePEAnalysis
 
 if [ $long -eq 1 ]; then
