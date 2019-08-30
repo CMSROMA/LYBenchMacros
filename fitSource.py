@@ -11,6 +11,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--input',dest='input')
 parser.add_argument('--output',dest='output')
+parser.add_argument('--led',dest='led')
 parser.add_argument('--longRun',dest='longRun',action='store_true')
 parser.add_argument('--fromHistos',dest='fromHistos',action='store_true')
 
@@ -19,11 +20,11 @@ parser.set_defaults(longRun=False,fromHistos=False)
 args = parser.parse_args()
 
 #Very preliminary calibration to be updated (eg passed as parameter?)
-pe=18.5
+pe=16
 
 c=R.TCanvas("c","c",900,700)
 f=R.TFile(args.input)
-
+f2=R.TFile(args.led)
 
 histos = {}
 
@@ -50,6 +51,7 @@ if 'histos_' in runID:
     runID=runID.split('histos_')[1]
 
 out=R.TFile(args.output+"/SourceAnalysis_"+ runID +".root","RECREATE")
+outTS = open(args.output+"/SourceAnalysis_Summary.txt","a")       
 
 for ibin in range(1,maxSpill+1):
     if (args.longRun and histos['spill'].GetBinContent(ibin) < 1000 ):
@@ -211,6 +213,12 @@ for ibin in range(1,maxSpill+1):
     if (args.longRun):
         spillID=spillID+key
 
+    pedaytxt = f2.Get("singlePE").GetMean()
+    ledID=os.path.splitext(os.path.basename(args.led))[0]
+    txtstring = str(spillID) + "  " + str(ibin) + "  " + str(pe) + "  " + str(ledID) + "  " + str(pedaytxt) + "  " + str(fTot.GetParameter(10)) + "  " + str(fTot.GetParError(10)) + "  " + str(fTot.GetParameter(11)) + "  " + str(fTot.GetParError(11)) + "  " + str(fTot.GetParameter(4)) + "  " + str(fTot.GetParError(4)) + "  " + str(fTot.GetParameter(5)) + "  " + str(fTot.GetParError(5)) + "  "
+    outTS.write(txtstring)
+    outTS.close()
+
     text=R.TLatex()
     text.SetTextSize(0.03)
     #text.DrawLatexNDC(0.485,0.4,"511 KeV Peak: %.4e #pm %.2e"%(fTot.GetParameter(10),fTot.GetParError(10)))
@@ -352,3 +360,11 @@ if (args.longRun):
         c.SaveAs(args.output+"/tb_"+ runID +"."+ext)
     histos['tb'].Write("TBench_"+runID)
 
+out.cd()
+histos['peused']=R.TH1F('peused','peused',60,10,25)
+histos['peused'].Fill(pe)
+histos['peused'].Draw()
+histos['peused'].Write("peused")
+
+histos['peday']=f2.Get("singlePE")
+histos['peday'].Write("peday")

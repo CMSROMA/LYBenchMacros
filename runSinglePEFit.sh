@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PARSED_OPTIONS=$(getopt -n "$0"  -o i:l --long "input:long,fromHistos"  -- "$@")
+PARSED_OPTIONS=$(getopt -n "$0"  -o i:ls --long "input:long,fromHistos,simul"  -- "$@")
 #Bad arguments, something has gone wrong with the getopt command.
 if [ $? -ne 0 ];
 then
@@ -12,6 +12,7 @@ eval set -- "$PARSED_OPTIONS"
 
 inputFile=""
 long=0
+simul=0
 fromHistos=0
 
 while true;
@@ -29,6 +30,10 @@ do
       long=1
       echo "LongRun analysis"
       shift;; 
+    -s|--simul)
+      simul=1
+      echo "Scan simultaneous fit analysis"
+      shift;; 
     --fromHistos)
       fromHistos=1
       echo "Running from histograms"
@@ -45,13 +50,17 @@ then
   exit 1
 fi
 
-source ~/H4AnalysisEnv.sh
+#source ~/H4AnalysisEnv.sh
 
 mkdir -p SinglePEAnalysis
 
 if [ $long -eq 1 ]; then
     if [ $fromHistos -eq 0 ]; then
-	root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/ntuples/h4Reco_$inputFile.root\",1,0\)
+	if [ $simul -eq 0 ]; then
+	    root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/ntuples/h4Reco_$inputFile.root\",1,0\)
+	else
+	    root -l -b -q SinglePEAnalysis_LedScan_Simultaneous_LL.C+\(\"/data/cmsdaq/led/ntuples/\",\"$inputFile\",1\)
+	fi
     else
 	if [ ! -f "/data/cmsdaq/led/histos/histos_${inputFile}.root" ]; then
 	    python makeHisto.py --input=/data/cmsdaq/led/ntuples/h4Reco_${inputFile}.root --output=/data/cmsdaq/led/histos/histos_${inputFile}.root --inputEnvData=/data/cmsdaq/slowControl/temperatures  --runType=led --longRun
@@ -60,7 +69,11 @@ if [ $long -eq 1 ]; then
     fi
 else
     if [ $fromHistos -eq 0 ]; then
-	root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/ntuples/h4Reco_$inputFile.root\",0,0\)
+	if [ $simul -eq 0 ]; then
+	    root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/ntuples/h4Reco_$inputFile.root\",0,0\)
+	else
+	    root -l -b -q SinglePEAnalysis_LedScan_Simultaneous_LL.C+\(\"/data/cmsdaq/led/ntuples/\",\"$inputFile\",0\)
+	fi
     else
 	if [ ! -f "/data/cmsdaq/led/histos/histos_${inputFile}.root" ]; then
 	    python makeHisto.py --input=/data/cmsdaq/led/ntuples/h4Reco_${inputFile}.root --output=/data/cmsdaq/led/histos/histos_${inputFile}.root --inputEnvData=/data/cmsdaq/slowControl/temperatures  --runType=led

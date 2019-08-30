@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.signal import cheby1, butter, lfilter, freqz
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import os
 import argparse
@@ -100,7 +102,7 @@ R.gStyle.SetOptTitle(0)
 R.gStyle.SetOptFit(0)
 f2.SetNpx(10000)
 wf.Draw("APE")
-wf.GetXaxis().SetRangeUser(-10,200)
+wf.GetXaxis().SetRangeUser(-5,300)
 wf.Fit(f2,"RB+","",15,200)
 xG_shift = np.empty(hh1.GetNbinsX()-1, dtype="float64")
 for ibin in range(1,hh1.GetNbinsX()):
@@ -110,6 +112,8 @@ wfOri.SetMarkerColor(R.kMagenta)
 wfOri.SetLineColor(R.kMagenta)
 wfOri.Draw("PLSAME")
 wf.SetMaximum(1)
+wf.SetMinimum(0.01)
+c.SetLogy(1)
 #f2.SetLineColor(R.kMagenta)
 #f2.SetLineWidth(4)
 #f2.Draw("SAME")
@@ -130,3 +134,8 @@ fOut=R.TFile(args.output+"/SourceAnalysis_"+runID+".root","UPDATE")
 fOut.cd()
 wf.Write("filteredWaveform_spill0")
 fOut.Close()
+
+outTS = open(args.output+"/SourceAnalysis_Summary.txt","a")
+txtstring = str(f2.GetParameter(1)) + "  " + str(f2.GetParError(1)) + "\n" 
+outTS.write(txtstring)
+outTS.close()
