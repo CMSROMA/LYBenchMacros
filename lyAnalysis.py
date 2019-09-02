@@ -16,26 +16,41 @@ def Map(tf):
         m[n] = tf.Get(n)
     return m
 
-def LYAnalysis(crystalInfo):
+def LYAnalysis(crystal,crystalInfo):
     files={}
-    ly=array('d')
+
+    ly , dt = array('d'), array('d')
     for r in crystalInfo['runs']:
         files[r]=R.TFile.Open("SourceAnalysis/SourceAnalysis_"+r+".root")
         objs=Map(files[r])
+
         if not 'charge_spill0' in objs.keys():
             print "Bad Run (no charge histogram): "+r
             continue
+        if not 'filteredWaveform_spill0' in objs.keys():
+            print "Bad Run (no waveform): "+r
+            continue
+
         if (objs['charge_spill0'].GetFunction('fTot').GetParameter(10)<1000) or (objs['charge_spill0'].GetFunction('fTot').GetParameter(10)>100000):
             print "Bad Run (strange fit): "+r
             continue
+
         ly.append(objs['charge_spill0'].GetFunction('fTot').GetParameter(10))
+        dt.append(objs['filteredWaveform_spill0'].GetFunction("f2").GetParameter(1))
+
     if len(ly)==0:
-        print "No good data for this crystal!"
+        print "No good LY data for "+crystal
         lyAvg=-9999
     else:
         lyAvg=sum(ly)/len(ly)
-    ref=array('d')
 
+    if len(dt)==0:
+        print "No good waveform for "+crystal
+        dtAvg=-9999
+    else:
+        dtAvg=sum(dt)/len(dt)
+
+    ref=array('d')
     for r in crystalInfo['refRuns']:
         files[r]=R.TFile.Open("SourceAnalysis/SourceAnalysis_"+r+".root")
         objs=Map(files[r])
@@ -52,10 +67,10 @@ def LYAnalysis(crystalInfo):
     else:
         refAvg=sum(ref)/len(ref)
 
-    ledAvg=LEDAnalysis(crystalInfo['ledRuns'])
-    return { 'ly':lyAvg, 'ref':refAvg, 'pe':ledAvg }
+    ledAvg=LEDAnalysis(crystal,crystalInfo['ledRuns'])
+    return { 'ly':lyAvg, 'dt':dtAvg, 'ref':refAvg, 'pe':ledAvg }
 
-def LEDAnalysis(ledRuns):
+def LEDAnalysis(crystal,ledRuns):
     files={}
     pe=array('d')
     for r in ledRuns:
@@ -73,7 +88,7 @@ def LEDAnalysis(ledRuns):
         pe.append(objs['PMT_0'].GetParameter(2))
 
     if len(pe)==0:
-        print "No good LED data for this crystal!"
+        print "No good LED data for "+crystal
         peAvg=-9999
     else:
         peAvg=sum(pe)/len(pe)
@@ -82,7 +97,16 @@ def LEDAnalysis(ledRuns):
 
 from crystalsDB import crystalsDB
 
+crystalsDB_withData = {}
+
 for crystal,crystalInfo in crystalsDB.items():
     print "Analysing crystal "+crystal
-    lyData=LYAnalysis(crystalInfo)
-    print lyData
+    lyData=LYAnalysis(crystal,crystalInfo)
+    crystalInfo.update(lyData)
+    crystalsDB_withData[crystal]=crystalInfo
+
+#Save CSV using Pandas DataFrame
+import pandas as pd
+df=pd.DataFrame.from_dict(crystalsDB_withData,orient='index')
+df=df.drop(columns=['runs','ledRuns','refRuns'])
+df.to_csv('lyAnalysis.csv',header=False)
