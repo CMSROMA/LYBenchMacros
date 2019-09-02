@@ -95,6 +95,12 @@ def LEDAnalysis(crystal,ledRuns):
 
     return peAvg
 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--output',dest='output')
+args = parser.parse_args()
+
 from crystalsDB import crystalsDB
 
 crystalsDB_withData = {}
@@ -109,4 +115,4 @@ for crystal,crystalInfo in crystalsDB.items():
 import pandas as pd
 df=pd.DataFrame.from_dict(crystalsDB_withData,orient='index')
 df=df.drop(columns=['runs','ledRuns','refRuns'])
-df.to_csv('lyAnalysis.csv',header=False)
+df.to_csv(args.output,header=False)
