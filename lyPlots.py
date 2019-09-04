@@ -72,7 +72,8 @@ for iprod,prod in enumerate(producers):
         histos['dtVslyNorm_'+prod+'_'+geo].Draw("PSAME")
 
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
-c1.SaveAs("LYAnalysis/dtVslyNorm_GeomDifferentColors.pdf")
+for ext in ['.pdf','.png','.C']:
+    c1.SaveAs("LYAnalysis/dtVslyNorm_GeomDifferentColors"+ext)
 
 frame.Draw()
 leg.Clear()
@@ -87,7 +88,8 @@ for iprod,prod in enumerate(producers):
         
 leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
-c1.SaveAs("LYAnalysis/dtVslyNorm_ProdDifferentColors.pdf")
+for ext in ['.pdf','.png','.C']:
+    c1.SaveAs("LYAnalysis/dtVslyNorm_ProdDifferentColors"+ext)
 
 maxH=0
 mainHisto=''
@@ -115,7 +117,8 @@ histos[mainHisto].SetMaximum(maxH*1.7)
 histos[mainHisto].GetXaxis().SetRangeUser(450,950)
 leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
-c1.SaveAs("LYAnalysis/ly_ProdDifferentColors.pdf")
+for ext in ['.pdf','.png','.C']:
+    c1.SaveAs("LYAnalysis/ly_ProdDifferentColors"+ext)
 
 maxH=0
 mainHisto=''
@@ -142,7 +145,8 @@ histos[mainHisto].SetMaximum(maxH*1.7)
 histos[mainHisto].GetXaxis().SetRangeUser(0.8,1.4)
 leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
-c1.SaveAs("LYAnalysis/lyNorm_ProdDifferentColors.pdf")
+for ext in ['.pdf','.png','.C']:
+    c1.SaveAs("LYAnalysis/lyNorm_ProdDifferentColors"+ext)
 
 maxH=0
 mainHisto=''
@@ -171,7 +175,8 @@ histos[mainHisto].GetXaxis().SetRangeUser(500.,900.)
 leg.Draw()
 
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
-c1.SaveAs("LYAnalysis/lyAbs_ProdDifferentColors.pdf")
+for ext in ['.pdf','.png','.C']:
+    c1.SaveAs("LYAnalysis/lyAbs_ProdDifferentColors"+ext)
 
 maxH=0
 mainHisto=''
@@ -200,7 +205,8 @@ histos[mainHisto].GetXaxis().SetRangeUser(10.,20.)
 leg.Draw()
 
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
-c1.SaveAs("LYAnalysis/lyAbsOverDt_ProdDifferentColors.pdf")
+for ext in ['.pdf','.png','.C']:
+    c1.SaveAs("LYAnalysis/lyAbsOverDt_ProdDifferentColors"+ext)
 
 out=R.TFile("LYAnalysis/LYplots.root","RECREATE")
 for h,histo in histos.items():
