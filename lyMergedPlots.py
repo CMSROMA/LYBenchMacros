@@ -22,17 +22,18 @@ for prod in producers:
         histos['lyRatio_'+prod+'_'+geo]=R.TH1F('lyRatio_'+prod+'_'+geo,'lyRatio_'+prod+'_'+geo,100,0.5,1.5)
         data[prod+'_'+geo] = []
 
+#1.06 needed to get average ratio between producers@ 1 
 ratiosTof = { 'geo1': 0.9/1.06, 'geo2':1/1.06, 'geo3':1.03/1.06 }
 
 for crys in crystalsData:
     prod=crys.prod.rstrip('\x00')
     geo=crys.geo.rstrip('\x00')
-    if ( crys.ly < 0 or crys.ref < 0 or crys.dt < 0 or crys.lyTof<0 or crys.ctrTof<0 or crys.lyRefTof<0 or crys.ctrRefTof<0 ):
+    if ( crys.ly < 0 or crys.ref < 0 or crys.dt < 0 or crys.lyTofCoinc<0 or crys.ctrTof<0 or crys.lyRefTofCoinc<0 or crys.ctrRefTof<0 ):
         continue
-    data[prod+'_'+geo].append({ 'ly':crys.ly, 'lyTof':crys.lyTof/ratiosTof[geo], 'lyNorm': crys.ly/crys.ref, 'dt': crys.dt, 'lyTofNorm': crys.lyTof/crys.lyRefTof/ratiosTof[geo], 'ctr': crys.ctrTof })
-    histos['lyRatio'].Fill((crys.ly/crys.ref)/(crys.lyTof/crys.lyRefTof/ratiosTof[geo]))
-    histos['lyRatio_'+prod+'_'+geo].Fill((crys.ly/crys.ref)/(crys.lyTof/crys.lyRefTof/ratiosTof[geo]))
-    histos['lyRatio_'+prod].Fill((crys.ly/crys.ref)/(crys.lyTof/crys.lyRefTof/ratiosTof[geo]))
+    data[prod+'_'+geo].append({ 'ly':crys.ly, 'lyGeoRatio':crys.ly*ratiosTof[geo], 'lyTof':crys.lyTofCoinc/ratiosTof[geo], 'lyNorm': crys.ly/crys.ref, 'lyNormGeoRatio': crys.ly*ratiosTof[geo]/crys.ref, 'dt': crys.dt, 'lyTofNorm': crys.lyTofCoinc/crys.lyRefTofCoinc/ratiosTof[geo], 'ctr': crys.ctrTof, 'lyTofNoGeoRatio':crys.lyTofCoinc, 'lyTofNormNoGeoRatio': crys.lyTofCoinc/crys.lyRefTofCoinc })
+    histos['lyRatio'].Fill((crys.ly/crys.ref)/(crys.lyTofCoinc/crys.lyRefTofCoinc/ratiosTof[geo]))
+    histos['lyRatio_'+prod+'_'+geo].Fill((crys.ly/crys.ref)/(crys.lyTofCoinc/crys.lyRefTofCoinc/ratiosTof[geo]))
+    histos['lyRatio_'+prod].Fill((crys.ly/crys.ref)/(crys.lyTofCoinc/crys.lyRefTofCoinc/ratiosTof[geo]))
 
 for prod in producers: 
     for geo in geoms:
@@ -49,9 +50,9 @@ for prod in producers:
         for i,barData in enumerate(data[prod+'_'+geo]):
             histos['lyNormCorr_'+prod+'_'+geo].SetPoint(i,barData['lyNorm'],barData['lyTofNorm'])
             histos['lyCorr_'+prod+'_'+geo].SetPoint(i,barData['ly'],barData['lyTof'])
-            histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetPoint(i,barData['lyNorm']*10000./16./barData['dt']/14.,barData['ctr']/160.,)
-            histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetPoint(i,barData['lyTofNorm']*10000./16./barData['dt']/14.,barData['ctr']/160.)
-            histos['ctrVslyTofNorm_'+prod+'_'+geo].SetPoint(i,barData['lyTofNorm'],barData['ctr']/160.)
+            histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetPoint(i,barData['lyNormGeoRatio']*10000./16./barData['dt']/13.,barData['ctr']/160.,)
+            histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetPoint(i,barData['lyTofNormNoGeoRatio']*10000./16./barData['dt']/13.,barData['ctr']/160.)
+            histos['ctrVslyTofNorm_'+prod+'_'+geo].SetPoint(i,barData['lyTofNormNoGeoRatio']*1.06,barData['ctr']/160.)
 
 c1=R.TCanvas("c1","c1",800,600)
 R.gStyle.SetOptTitle(0)
@@ -67,7 +68,7 @@ leg.SetTextSize(0.03)
 frame=R.TH2F("frame","frame",20,0.7,1.5,20,0.7,1.5)
 frame.SetStats(0)
 frame.GetXaxis().SetTitle("LO Normalised to REF bar (LO Bench)")
-frame.GetYaxis().SetTitle("LO Normalised to REF bar (TOFPET Bench)")
+frame.GetYaxis().SetTitle("LO Normalised to REF bar (TOFPET Bench+GeoCorr)")
 
 frame.Draw()
 leg.Clear()
@@ -91,7 +92,7 @@ for ext in ['.pdf','.png','.C']:
 
 frame2=R.TH2F("frame2","frame2",20,0.7,1.5,20,0.7,1.5)
 frame2.SetStats(0)
-frame2.GetXaxis().SetTitle("LO LO Bench/Decay Time (LO Bench)/14 #pe/ns")
+frame2.GetXaxis().SetTitle("LO LO Bench (GeoCorr)/Decay Time/13 #pe/ns")
 frame2.GetYaxis().SetTitle("CTR/160 ps")
 
 frame2.Draw()
@@ -113,7 +114,7 @@ for ext in ['.pdf','.png','.C']:
 
 frame3=R.TH2F("frame3","frame3",20,0.7,1.5,20,0.7,1.5)
 frame3.SetStats(0)
-frame3.GetXaxis().SetTitle("LO TOFPET Bench/Decay Time/ 14 #pe/ns")
+frame3.GetXaxis().SetTitle("LO TOFPET Bench (NoGeoCorr)/Decay Time/ 13 #pe/ns")
 frame3.GetYaxis().SetTitle("CTR/160 ps")
 
 frame3.Draw()
@@ -135,7 +136,7 @@ for ext in ['.pdf','.png','.C']:
 
 frame4=R.TH2F("frame4","frame4",20,0.7,1.5,20,0.7,1.5)
 frame4.SetStats(0)
-frame4.GetXaxis().SetTitle("LO TOFPET Bench normalised to REF")
+frame4.GetXaxis().SetTitle("LO TOFPET Bench normalised to REF (NoGeoCorr)")
 frame4.GetYaxis().SetTitle("CTR/160 ps")
 
 frame4.Draw()
