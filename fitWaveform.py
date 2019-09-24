@@ -133,6 +133,7 @@ for ext in ['.png','.pdf']:
 fOut=R.TFile(args.output+"/SourceAnalysis_"+runID+".root","UPDATE")
 fOut.cd()
 wf.Write("filteredWaveform_spill0")
+wfOri.Write("waveform_spill0")
 fOut.Close()
 
 outTS = open(args.output+"/SourceAnalysis_Summary.txt","a")

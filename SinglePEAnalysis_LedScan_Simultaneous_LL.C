@@ -176,9 +176,9 @@ FitResults fitSimultaneous( std::vector<TH1F*> histos, double xMin, double xMax 
 
   GlobalChi2 globalChi2(chi2);
 
-  par0[2*nHistos]=15.5; //Q1
+  par0[2*nHistos]=20; //Q1
   par0[2*nHistos+1]=0.59*par0[2*nHistos]; //Q1 sigma
-  par0[2*nHistos+2]=50; 
+  par0[2*nHistos+2]=20; 
   par0[2*nHistos+3]=6 ; 
   par0[2*nHistos+4]=-1.5; 
 
@@ -197,7 +197,7 @@ FitResults fitSimultaneous( std::vector<TH1F*> histos, double xMin, double xMax 
  #else
   fitter.Config().ParSettings(2*nHistos+1).Fix();
 #endif
-  fitter.Config().ParSettings(2*nHistos+2).SetLimits(35,70);
+  fitter.Config().ParSettings(2*nHistos+2).SetLimits(0,70);
   fitter.Config().ParSettings(2*nHistos+3).SetLimits(3.5, 8.);
   fitter.Config().ParSettings(2*nHistos+4).SetLimits(-5.,0.);
 

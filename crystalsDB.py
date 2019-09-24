@@ -828,5 +828,217 @@ crystalsDB={
         'ledRuns' : [ 'LED-SCAN-TEST-20190726' ]
     },
 
-    
+
+#################################
+###### Prod8 ####################
+#################################
+
+### Geo1
+    "BAR000115":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000115-WS3-NW-NC-P2-SL-H3-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000116":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000116-WS3-NW-NC-P2-SL-H3-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000117":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000117-WS3-NW-NC-P2-SL-H3-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000118":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000118-WS3-NW-NC-P2-SL-H3-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000119":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000119-WS3-NW-NC-P2-SL-H3-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000120":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000120-WS3-NW-NC-P2-SL-H2-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000121":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000121-WS3-NW-NC-P2-SL-H2-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000122":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000122-WS3-NW-NC-P2-SL-H2-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000123":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000123-WS3-NW-NC-P2-SL-H2-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000124":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000124-WS3-NW-NC-P2-SL-H2-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000125":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo3',
+        'runs'  :  [ 'BAR000125-WS3-NW-NC-P2-SL-H2-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000126":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo3',
+        'runs'  :  [ 'BAR000126-WS3-NW-NC-P2-SL-H1-20190912-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000127":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000127-WS3-NW-NC-P2-SL-H1-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000128":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000128-WS3-NW-NC-P2-SL-H1-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000129":
+    {
+        'producer' : 'prod8',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000129-WS3-NW-NC-P2-SL-H1-20190912' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190912-1','REF-WS3-NW-NC-P2-SL-20190912-2', 'REF-WS3-NW-NC-P2-SL-20190912-3'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+
+#################################
+###### Prod7 ####################
+#################################
+
+### Geo1
+
+    "BAR000130":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000130-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000131":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000131-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000132":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000132-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000133":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000133-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000134":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000134-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000135":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000135-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000136":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000136-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000137":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000137-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000138":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000138-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    },
+    "BAR000139":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000139-WS3-NW-NC-P2-SL-H2-20190911-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
+        'ledRuns' : [ 'LED-20190913-SCAN-1' ]
+    }    
 }

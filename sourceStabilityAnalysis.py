@@ -50,7 +50,7 @@ lyResArray=np.array(lyres)
 histos={}
 c=R.TCanvas("c","c",900,700)
 
-histos['ly']=R.TH1F('ly_'+args.input,'ly_'+args.input,60,1-5*lyArray.std()/lyArray.mean(),1+5*lyArray.std()/lyArray.mean())
+histos['ly']=R.TH1F('ly_'+args.input,'ly_'+args.input,10,1-5*lyArray.std()/lyArray.mean(),1+5*lyArray.std()/lyArray.mean())
 for val in lyArray:
     histos['ly'].Fill(val/lyArray.mean())
 histos['ly'].Draw()

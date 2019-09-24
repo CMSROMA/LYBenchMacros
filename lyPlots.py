@@ -4,7 +4,7 @@ R.gROOT.SetBatch(1)
 crystalsData=R.TTree("crystalsData","crystalsData");
 crystalsData.ReadFile("LYAnalysis/crystalsData.csv","id/C:prod/C:geo/C:pe/F:dt/F:ref/F:ly/F");
 
-producers = [ 'prod'+str(i) for i in range(1,7) ]
+producers = [ 'prod'+str(i) for i in range(1,9) ]
 geoms = [ 'geo'+str(i) for i in range(1,4) ]
 
 histos = {}
@@ -71,7 +71,7 @@ for iprod,prod in enumerate(producers):
         histos['dtVslyNorm_'+prod+'_'+geo].SetMarkerColor(R.kBlack+igeo)
         histos['dtVslyNorm_'+prod+'_'+geo].Draw("PSAME")
 
-text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
+text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT Bench")
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/dtVslyNorm_GeomDifferentColors"+ext)
 
@@ -87,7 +87,7 @@ for iprod,prod in enumerate(producers):
             leg.AddEntry(histos['dtVslyNorm_'+prod+'_'+geo],"%s - Mean LO:%3.2f, DT: %3.1f"%(prod,histos['dtVslyNorm_'+prod+'_'+geo].GetMean(1),histos['dtVslyNorm_'+prod+'_'+geo].GetMean(2)),"P")
         
 leg.Draw()
-text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
+text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT Bench")
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/dtVslyNorm_ProdDifferentColors"+ext)
 
@@ -100,6 +100,7 @@ for iprod,prod in enumerate(producers):
     histos['ly_'+prod].GetXaxis().SetTitle("LO [#pe]")
     histos['ly_'+prod].SetLineColor(R.kBlack+iprod)
     histos['ly_'+prod].SetLineWidth(3)
+    histos['ly_'+prod].SetLineStyle(iprod/4+1)
     histos['ly_'+prod].SetFillStyle(3001)
     histos['ly_'+prod].SetFillColorAlpha(R.kBlack+iprod,0.45)
     leg.AddEntry(histos['ly_'+prod],"%s - Mean:%3.1f, RMS:%2.1f"%(prod,histos['ly_'+prod].GetMean(),histos['ly_'+prod].GetRMS()),'F')
@@ -116,7 +117,7 @@ for iprod,prod in enumerate(producers):
 histos[mainHisto].SetMaximum(maxH*1.7)
 histos[mainHisto].GetXaxis().SetRangeUser(450,950)
 leg.Draw()
-text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
+text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT Bench")
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/ly_ProdDifferentColors"+ext)
 
@@ -129,6 +130,7 @@ for iprod,prod in enumerate(producers):
     histos['lyNorm_'+prod].GetXaxis().SetTitle("LO normalised to REF daily")
     histos['lyNorm_'+prod].SetLineColor(R.kBlack+iprod)
     histos['lyNorm_'+prod].SetLineWidth(3)
+    histos['lyNorm_'+prod].SetLineStyle(iprod/4+1)
     histos['lyNorm_'+prod].SetFillStyle(3001)
     histos['lyNorm_'+prod].SetFillColorAlpha(R.kBlack+iprod,0.45)
     leg.AddEntry(histos['lyNorm_'+prod],"%s - Mean:%3.2f, RMS:%3.2f"%(prod,histos['lyNorm_'+prod].GetMean(),histos['lyNorm_'+prod].GetRMS()),'F')
@@ -144,7 +146,7 @@ for iprod,prod in enumerate(producers):
 histos[mainHisto].SetMaximum(maxH*1.7)
 histos[mainHisto].GetXaxis().SetRangeUser(0.8,1.4)
 leg.Draw()
-text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
+text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT Bench")
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/lyNorm_ProdDifferentColors"+ext)
 
@@ -157,6 +159,7 @@ for iprod,prod in enumerate(producers):
     histos['lyAbs_'+prod].GetXaxis().SetTitle("LO normalised to REF daily [#pe]")
     histos['lyAbs_'+prod].SetLineColor(R.kBlack+iprod)
     histos['lyAbs_'+prod].SetLineWidth(3)
+    histos['lyAbs_'+prod].SetLineStyle(iprod/4+1)
     histos['lyAbs_'+prod].SetFillStyle(3001)
     histos['lyAbs_'+prod].SetFillColorAlpha(R.kBlack+iprod,0.45)
     leg.AddEntry(histos['lyAbs_'+prod],"%s - Mean:%3.1f, RMS:%3.1f"%(prod,histos['lyAbs_'+prod].GetMean(),histos['lyAbs_'+prod].GetRMS()),'F')
@@ -174,7 +177,7 @@ histos[mainHisto].SetMaximum(maxH*1.7)
 histos[mainHisto].GetXaxis().SetRangeUser(500.,900.)
 leg.Draw()
 
-text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
+text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT Bench")
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/lyAbs_ProdDifferentColors"+ext)
 
@@ -187,6 +190,7 @@ for iprod,prod in enumerate(producers):
     histos['lyAbsOverDt_'+prod].GetXaxis().SetTitle("LO/Decay Time [#pe/ns]")
     histos['lyAbsOverDt_'+prod].SetLineColor(R.kBlack+iprod)
     histos['lyAbsOverDt_'+prod].SetLineWidth(3)
+    histos['lyAbsOverDt_'+prod].SetLineStyle(iprod/4+1)
     histos['lyAbsOverDt_'+prod].SetFillStyle(3001)
     histos['lyAbsOverDt_'+prod].SetFillColorAlpha(R.kBlack+iprod,0.45)
     leg.AddEntry(histos['lyAbsOverDt_'+prod],"%s - Mean:%3.1f, RMS:%2.1f"%(prod,histos['lyAbsOverDt_'+prod].GetMean(),histos['lyAbsOverDt_'+prod].GetRMS()),'F')
@@ -204,7 +208,7 @@ histos[mainHisto].SetMaximum(maxH*1.7)
 histos[mainHisto].GetXaxis().SetRangeUser(10.,20.)
 leg.Draw()
 
-text.DrawLatexNDC(0.12,0.91,"CMS Rome - LO Bench")
+text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT Bench")
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/lyAbsOverDt_ProdDifferentColors"+ext)
 

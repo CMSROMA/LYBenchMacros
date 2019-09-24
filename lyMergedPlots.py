@@ -10,7 +10,7 @@ result.to_csv("LYAnalysis/lyAnalysisMerged.csv",header=False)
 crystalsData=R.TTree("crystalsData","crystalsData");
 crystalsData.ReadFile("LYAnalysis/lyAnalysisMerged.csv","id/C:prod/C:geo/C:pe/F:dt/F:ref/F:ly/F:lyTof/F:lyTofCoinc/F:ctrTof/F:lyRefTof/F:lyRefTofCoinc/F:ctrRefTof/F");
 
-producers = [ 'prod'+str(i) for i in range(1,7) ]
+producers = [ 'prod'+str(i) for i in range(1,9) ]
 geoms = [ 'geo'+str(i) for i in range(1,4) ]
 
 histos = {}
@@ -54,6 +54,7 @@ for crys in crystalsData:
     if ( crys.ly < 0 or crys.ref < 0 or crys.dt < 0 or crys.lyTofCoinc<0 or crys.ctrTof<0 or crys.lyRefTofCoinc<0 or crys.ctrRefTof<0 ):
         continue
     if ( crys.lyTofCoinc == crys.lyRefTofCoinc ):
+        print "******* "+crys.id
         continue
 
     data[prod+'_'+geo].append({ 'ly':crys.ly, 'lyGeoRatio':crys.ly*ratiosTof[geo], 'lyTof':crys.lyTofCoinc/ratiosTof[geo], 'lyNorm': crys.ly/crys.ref, 'lyNormGeoRatio': crys.ly*ratiosTof[geo]/crys.ref, 'dt': crys.dt, 'lyTofNorm': crys.lyTofCoinc/crys.lyRefTofCoinc/ratiosTof[geo], 'ctr': R.TMath.Sqrt(crys.ctrTof*crys.ctrTof-90*90), 'lyTofNoGeoRatio':crys.lyTofCoinc, 'lyTofNormNoGeoRatio': crys.lyTofCoinc/crys.lyRefTofCoinc })
@@ -83,24 +84,31 @@ for prod in producers:
     ncry=0
     for geo in geoms:
         print data[prod+'_'+geo]
-        histos['lyNormCorr_'+prod+'_'+geo]=R.TGraph(len(data[prod+'_'+geo]))
+        histos['lyNormCorr_'+prod+'_'+geo]=R.TGraphErrors(len(data[prod+'_'+geo]))
         histos['lyNormCorr_'+prod+'_'+geo].SetName('lyNormCorr_'+prod+'_'+geo)
-        histos['lyCorr_'+prod+'_'+geo]=R.TGraph(len(data[prod+'_'+geo]))
+        histos['lyCorr_'+prod+'_'+geo]=R.TGraphErrors(len(data[prod+'_'+geo]))
         histos['lyCorr_'+prod+'_'+geo].SetName('lyCorr_'+prod+'_'+geo)
-        histos['ctrVslyAbsOverDt_'+prod+'_'+geo]=R.TGraph(len(data[prod+'_'+geo]))
+        histos['ctrVslyAbsOverDt_'+prod+'_'+geo]=R.TGraphErrors(len(data[prod+'_'+geo]))
         histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetName('ctrVslyAbsOverDt__'+prod+'_'+geo)
-        histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo]=R.TGraph(len(data[prod+'_'+geo]))
+        histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo]=R.TGraphErrors(len(data[prod+'_'+geo]))
         histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetName('ctrVslyAbsTofOverDt_'+prod+'_'+geo)
-        histos['ctrVslyTofNorm_'+prod+'_'+geo]=R.TGraph(len(data[prod+'_'+geo]))
+        histos['ctrVslyTofNorm_'+prod+'_'+geo]=R.TGraphErrors(len(data[prod+'_'+geo]))
         histos['ctrVslyTofNorm_'+prod+'_'+geo].SetName('ctrVslyTofNorm_'+prod+'_'+geo)
         for i,barData in enumerate(data[prod+'_'+geo]):
             print ncry
             histos['lyNormCorr_'+prod+'_'+geo].SetPoint(i,barData['lyNorm'],barData['lyTofNorm'])
+            histos['lyNormCorr_'+prod+'_'+geo].SetPointError(i,0.05,0.05)
             histos['lyCorr_'+prod+'_'+geo].SetPoint(i,barData['ly'],barData['lyTof'])
-            histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetPoint(i,1/(barData['lyNormGeoRatio']*10000./16./barData['dt']/12.5),barData['ctr']/130.,)
-            histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetPoint(i,1/(barData['lyTofNormNoGeoRatio']*10000./16./barData['dt']/12.5),barData['ctr']/130.)
-            histos['ctrVslyAbsTofOverDt_'+prod].SetPoint(ncry,1/(barData['lyTofNormNoGeoRatio']*10000./16./barData['dt']/12.5),barData['ctr']/130.)
-            histos['ctrVslyTofNorm_'+prod+'_'+geo].SetPoint(i,barData['lyTofNormNoGeoRatio']*1.06,barData['ctr']/130.)
+            histos['lyCorr_'+prod+'_'+geo].SetPointError(i,barData['ly']*0.05,barData['lyTof']*0.05)
+            histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetPoint(i,1/(barData['lyNormGeoRatio']*10000./16./barData['dt']/12.5),barData['ctr']/120.,)
+            histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetPointError(i,0.05/(barData['lyNormGeoRatio']*10000./16./barData['dt']/12.5),barData['ctr']*0.05/120.,)
+#            print (barData['lyTofNormNoGeoRatio']/barData['dt'])
+            histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetPoint(i,1/(barData['lyTofNormNoGeoRatio']/barData['dt']/0.02),barData['ctr']/120.)
+#            histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetPoint(i,1/(barData['lyTofNormNoGeoRatio']*10000./16./barData['dt']/12.5),barData['ctr']/120.)
+            histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetPointError(i,0.05/(barData['lyTofNormNoGeoRatio']/barData['dt']/0.02),barData['ctr']*0.05/120.)
+#            histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetPointError(i,0.05/(barData['lyTofNormNoGeoRatio']*10000./16./barData['dt']/12.5),barData['ctr']*0.05/120.)
+            histos['ctrVslyTofNorm_'+prod+'_'+geo].SetPoint(i,1/(barData['lyTofNormNoGeoRatio']*1.06),barData['ctr']/120.)
+            histos['ctrVslyTofNorm_'+prod+'_'+geo].SetPointError(i,0.05/(barData['lyTofNormNoGeoRatio']*1.06),barData['ctr']*0.05/120.)
             ncry+=1
 
 c1=R.TCanvas("c1","c1",800,600)
@@ -113,7 +121,6 @@ leg=R.TLegend(0.4,0.6,0.92,0.88)
 leg.SetBorderSize(0)
 leg.SetFillColorAlpha(0,0)
 leg.SetTextSize(0.03)
-
 frame=R.TH2F("frame","frame",20,0.7,1.5,20,0.7,1.5)
 frame.SetStats(0)
 frame.GetXaxis().SetTitle("LO Normalised to REF bar (PMT)")
@@ -129,23 +136,36 @@ for iprod,prod in enumerate(producers):
     for igeo,geo in enumerate(geoms):
         histos['lyNormCorr_'+prod+'_'+geo].SetMarkerStyle(20+igeo)
         histos['lyNormCorr_'+prod+'_'+geo].SetMarkerColor(R.kBlack+iprod)
+        histos['lyNormCorr_'+prod+'_'+geo].SetLineColor(R.kBlack+iprod)
         histos['lyNormCorr_'+prod+'_'+geo].SetMarkerSize(1.2)
         histos['lyNormCorr_'+prod+'_'+geo].Draw("PSAME")
         if (igeo==0):
-            leg.AddEntry(histos['lyNormCorr_'+prod+'_'+geo],"%s - <PMT>:%3.2f, <TOFPET>: %3.2f"%(prod,histos['lyNormCorr_'+prod+'_'+geo].GetMean(1),histos['lyNormCorr_'+prod+'_'+geo].GetMean(2)),"P")
+            leg.AddEntry(histos['lyNormCorr_'+prod+'_'+geo],"%s - <PMT>:%3.2f, <TOFPET>: %3.2f"%(prod,histos['lyPMTNorm_'+prod].GetMean(),histos['lyTOFPETNorm_'+prod].GetMean()),"P")
 f.Draw("SAME")        
 leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
-for ext in ['.pdf','.png','.C']:
+for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/lyNormCorr_ProdDifferentColors"+ext)
 
 
+for igeo,geo in enumerate(geoms):
+    frame.Draw()
+    leg.Clear()
+    for iprod,prod in enumerate(producers): 
+        histos['lyNormCorr_'+prod+'_'+geo].SetMarkerStyle(20+igeo)
+        histos['lyNormCorr_'+prod+'_'+geo].SetMarkerColor(R.kBlack+iprod)
+        histos['lyNormCorr_'+prod+'_'+geo].SetLineColor(R.kBlack+iprod)
+        histos['lyNormCorr_'+prod+'_'+geo].SetMarkerSize(1.2)
+        histos['lyNormCorr_'+prod+'_'+geo].Draw("PSAME")
+        leg.AddEntry(histos['lyNormCorr_'+prod+'_'+geo],"%s - <PMT>:%3.2f, <TOFPET>: %3.2f"%(prod,histos['lyNormCorr_'+prod+'_'+geo].GetMean(1),histos['lyNormCorr_'+prod+'_'+geo].GetMean(2)),"P")
+    f.Draw("SAME")        
+    leg.Draw()
+    text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench -"+geo)
+    for ext in ['.pdf','.png']:
+        c1.SaveAs("LYAnalysis/lyNormCorr_ProdDifferentColors_"+geo+ext)
+
 frame.Draw()
 leg.Clear()
-
-f=R.TF1("f","x",0.8,1.2)
-f.SetLineColor(R.kRed+3)
-f.SetLineWidth(4)
 
 graphs=[]
 for iprod,prod in enumerate(producers): 
@@ -166,13 +186,17 @@ for g in graphs:
 f.Draw("SAME")        
 leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
-for ext in ['.pdf','.png','.C']:
+for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/lyNormMeanCorr_ProdDifferentColors"+ext)
 
-frame2=R.TH2F("frame2","frame2",20,0.8,1.5,20,0.7,1.5)
+frame2=R.TH2F("frame2","frame2",20,0.5,1.7,20,0.5,1.7)
 frame2.SetStats(0)
 frame2.GetXaxis().SetTitle("Relative Decay Time/LO PMT")
-frame2.GetYaxis().SetTitle("#sigma_{t} @ 511 KeV/130 ps")
+frame2.GetYaxis().SetTitle("#sigma_{t} @ 511 KeV/120 ps")
+
+f=R.TF1("f","x",0.8,1.3)
+f.SetLineColor(R.kBlack)
+f.SetLineWidth(4)
 
 frame2.Draw()
 leg.Clear()
@@ -181,20 +205,22 @@ for iprod,prod in enumerate(producers):
     for igeo,geo in enumerate(geoms):
         histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetMarkerStyle(20+igeo)
         histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetMarkerColor(R.kBlack+iprod)
+        histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetLineColor(R.kBlack+iprod)
         histos['ctrVslyAbsOverDt_'+prod+'_'+geo].SetMarkerSize(1.2)
         histos['ctrVslyAbsOverDt_'+prod+'_'+geo].Draw("PSAME")
         if (igeo==0):
             leg.AddEntry(histos['ctrVslyAbsOverDt_'+prod+'_'+geo],"%s - <LO/#tau>:%3.2f, <CTR>: %3.2f"%(prod,histos['ctrVslyAbsOverDt_'+prod+'_'+geo].GetMean(1),histos['ctrVslyAbsOverDt_'+prod+'_'+geo].GetMean(2)),"P")
 
-leg.Draw()
+#leg.Draw()
+f.Draw("SAME")        
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
-for ext in ['.pdf','.png','.C']:
+for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/ctrVslyAbsOverDt_ProdDifferentColors"+ext)
 
-frame3=R.TH2F("frame3","frame3",20,0.8,1.3,20,0.6,2.0)
+frame3=R.TH2F("frame3","frame3",20,0.5,1.7,20,0.5,1.7)
 frame3.SetStats(0)
 frame3.GetXaxis().SetTitle("Relative Decay Time/LO TOFPET (NoGeoCorr)")
-frame3.GetYaxis().SetTitle("#sigma_{t} @ 511 KeV/130 ps")
+frame3.GetYaxis().SetTitle("#sigma_{t} @ 511 KeV/120 ps")
 
 f1=R.TF1("f1","2*x-1",0.8,1.2)
 f1.SetLineColor(R.kRed+3)
@@ -209,29 +235,53 @@ leg.SetTextSize(0.025)
 
 histos['ctrVslyAbsTofOverDtSlope']=R.TH1F("ctrVslyAbsTofOverDtSlope","ctrVslyAbsTofOverDtSlope",100,0.,2.)
 for iprod,prod in enumerate(producers): 
-    histos['ctrVslyAbsTofOverDt_'+prod].SetMarkerStyle(24)
-    histos['ctrVslyAbsTofOverDt_'+prod].SetMarkerColor(R.kBlack+iprod)
-    histos['ctrVslyAbsTofOverDt_'+prod].SetMarkerSize(0)
-    histos['ctrVslyAbsTofOverDt_'+prod].Fit("pol1","","0+")
-    histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").SetLineColor(R.kBlack+iprod)
-    histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").SetLineWidth(1)
-    histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").SetLineStyle(2)
-    histos['ctrVslyAbsTofOverDt_'+prod].Draw("PSAME")
-    histos['ctrVslyAbsTofOverDtSlope'].Fill(histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").GetParameter(1))
+#    histos['ctrVslyAbsTofOverDt_'+prod].SetMarkerStyle(24)
+#    histos['ctrVslyAbsTofOverDt_'+prod].SetMarkerColor(R.kBlack+iprod)
+#    histos['ctrVslyAbsTofOverDt_'+prod].SetLineColor(R.kBlack+iprod)
+#    histos['ctrVslyAbsTofOverDt_'+prod].SetMarkerSize(0)
+#    histos['ctrVslyAbsTofOverDt_'+prod].Fit("pol1","","0+")
+#    histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").SetLineColor(R.kBlack+iprod)
+#    histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").SetLineWidth(1)
+#    histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").SetLineStyle(2)
+#    histos['ctrVslyAbsTofOverDt_'+prod].Draw("PSAME")
+#    histos['ctrVslyAbsTofOverDtSlope'].Fill(histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").GetParameter(1))
     for igeo,geo in enumerate(geoms):
         histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetMarkerStyle(20+igeo)
         histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetMarkerColor(R.kBlack+iprod)
+        histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetLineColor(R.kBlack+iprod)
         histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetMarkerSize(1.2)
         histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].Draw("PSAME")
         if (igeo==0):
-            leg.AddEntry(histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo],"%s - <LO/#tau>:%3.2f <CTR>: %3.2f <Slope> %2.1f"%(prod,histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].GetMean(1),histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].GetMean(2),histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").GetParameter(1)),"P")
+#            leg.AddEntry(histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo],"%s - <LO/#tau>:%3.2f <CTR>: %3.2f <Slope> %2.1f"%(prod,histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].GetMean(1),histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].GetMean(2),histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").GetParameter(1)),"P")
+            leg.AddEntry(histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo],"%s - <LO/#tau>:%3.2f <CTR>: %3.2f"%(prod,histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].GetMean(1),histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].GetMean(2)),"P")
 
 
-leg.Draw()
+#leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
-text.DrawLatexNDC(0.63,0.28,"<Slope>: %2.1f #pm %2.1f"%(histos['ctrVslyAbsTofOverDtSlope'].GetMean(),histos['ctrVslyAbsTofOverDtSlope'].GetRMS()))
-for ext in ['.pdf','.png','.C']:
+#text.DrawLatexNDC(0.63,0.28,"<Slope>: %2.1f #pm %2.1f"%(histos['ctrVslyAbsTofOverDtSlope'].GetMean(),histos['ctrVslyAbsTofOverDtSlope'].GetRMS()))
+f.Draw("SAME")        
+for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/ctrVslyAbsTofOverDt_ProdDifferentColors"+ext)
+
+    
+#f1.Draw("SAME")
+for igeo,geo in enumerate(geoms):
+    frame3.Draw()
+    leg.Clear()
+    leg.SetTextSize(0.025)
+    for iprod,prod in enumerate(producers): 
+        histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetMarkerStyle(20+igeo)
+        histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetMarkerColor(R.kBlack+iprod)
+        histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetLineColor(R.kBlack+iprod)
+        histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].SetMarkerSize(1.2)
+        histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].Draw("PSAME")
+        leg.AddEntry(histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo],"%s - <LO/#tau>:%3.2f <CTR>: %3.2f"%(prod,histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].GetMean(1),histos['ctrVslyAbsTofOverDt_'+prod+'_'+geo].GetMean(2)),"P")
+
+    #leg.Draw()
+    text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench - "+geo)
+    f.Draw("SAME")        
+    for ext in ['.pdf','.png']:
+        c1.SaveAs("LYAnalysis/ctrVslyAbsTofOverDt_ProdDifferentColors_"+geo+ext)
 
 frame3.Draw()
 leg.SetTextSize(0.03)
@@ -239,11 +289,13 @@ leg.Clear()
 #f1.Draw("SAME")
 graphs3=[]
 for iprod,prod in enumerate(producers): 
-    histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").Draw("SAME")
+#    histos['ctrVslyAbsTofOverDt_'+prod].GetFunction("pol1").Draw("SAME")
     for igeo,geo in enumerate(geoms):
         g=R.TGraphErrors(1)
-        g.SetPoint(0,13/histos['lyAbsTofOverDt_'+prod+'_'+geo].GetMean(),histos['ctr_'+prod+'_'+geo].GetMean()/130.)
-        g.SetPointError(0,13/(histos['lyAbsTofOverDt_'+prod+'_'+geo].GetMean()*histos['lyAbsTofOverDt_'+prod+'_'+geo].GetMean())*histos['lyAbsTofOverDt_'+prod+'_'+geo].GetRMS(),histos['ctr_'+prod+'_'+geo].GetRMS()/130.)
+        if (histos['lyAbsTofOverDt_'+prod+'_'+geo].GetEntries()==0):
+            continue
+        g.SetPoint(0,13/histos['lyAbsTofOverDt_'+prod+'_'+geo].GetMean(),histos['ctr_'+prod+'_'+geo].GetMean()/120.)
+        g.SetPointError(0,13/(histos['lyAbsTofOverDt_'+prod+'_'+geo].GetMean()*histos['lyAbsTofOverDt_'+prod+'_'+geo].GetMean())*histos['lyAbsTofOverDt_'+prod+'_'+geo].GetRMS(),histos['ctr_'+prod+'_'+geo].GetRMS()/120.)
         g.SetMarkerStyle(20+igeo)
         g.SetMarkerSize(1.2)
         g.SetMarkerColor(R.kBlack+iprod)
@@ -255,32 +307,50 @@ for iprod,prod in enumerate(producers):
 for g in graphs3:
     g.Draw("PSAME")
 
-leg.Draw()
+#leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
-for ext in ['.pdf','.png','.C']:
+f.Draw("SAME")        
+for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/ctrVslyAbsTofOverDtMean_ProdDifferentColors"+ext)
 
-frame4=R.TH2F("frame4","frame4",20,0.8,1.5,20,0.7,1.5)
+frame4=R.TH2F("frame4","frame4",20,0.5,1.7,20,0.5,1.7)
 frame4.SetStats(0)
-frame4.GetXaxis().SetTitle("LO TOFPET normalised to REF (NoGeoCorr)")
-frame4.GetYaxis().SetTitle("#sigma_{t} @ 511 KeV/130 ps")
+frame4.GetXaxis().SetTitle("1/LO TOFPET normalised to REF (NoGeoCorr)")
+frame4.GetYaxis().SetTitle("#sigma_{t} @ 511 KeV/120 ps")
 
 frame4.Draw()
 leg.Clear()
-
 for iprod,prod in enumerate(producers): 
     for igeo,geo in enumerate(geoms):
         histos['ctrVslyTofNorm_'+prod+'_'+geo].SetMarkerStyle(20+igeo)
         histos['ctrVslyTofNorm_'+prod+'_'+geo].SetMarkerColor(R.kBlack+iprod)
+        histos['ctrVslyTofNorm_'+prod+'_'+geo].SetLineColor(R.kBlack+iprod)
         histos['ctrVslyTofNorm_'+prod+'_'+geo].SetMarkerSize(1.2)
         histos['ctrVslyTofNorm_'+prod+'_'+geo].Draw("PSAME")
         if (igeo==0):
             leg.AddEntry(histos['ctrVslyTofNorm_'+prod+'_'+geo],"%s - <PMT>:%3.2f, <CTR>: %3.2f"%(prod,histos['ctrVslyTofNorm_'+prod+'_'+geo].GetMean(1),histos['ctrVslyTofNorm_'+prod+'_'+geo].GetMean(2)),"P")
 
-leg.Draw()
+#leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
-for ext in ['.pdf','.png','.C']:
+f.Draw("SAME")        
+for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/ctrVslyTofNorm_ProdDifferentColors"+ext)
+
+for igeo,geo in enumerate(geoms):
+    frame4.Draw()
+    leg.Clear()
+    for iprod,prod in enumerate(producers): 
+        histos['ctrVslyTofNorm_'+prod+'_'+geo].SetMarkerStyle(20+igeo)
+        histos['ctrVslyTofNorm_'+prod+'_'+geo].SetMarkerColor(R.kBlack+iprod)
+        histos['ctrVslyTofNorm_'+prod+'_'+geo].SetLineColor(R.kBlack+iprod)
+        histos['ctrVslyTofNorm_'+prod+'_'+geo].SetMarkerSize(1.2)
+        histos['ctrVslyTofNorm_'+prod+'_'+geo].Draw("PSAME")
+        leg.AddEntry(histos['ctrVslyTofNorm_'+prod+'_'+geo],"%s - <PMT>:%3.2f, <CTR>: %3.2f"%(prod,histos['ctrVslyTofNorm_'+prod+'_'+geo].GetMean(1),histos['ctrVslyTofNorm_'+prod+'_'+geo].GetMean(2)),"P")
+    #leg.Draw()
+    text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench - "+geo)
+    f.Draw("SAME")        
+    for ext in ['.pdf','.png']:
+        c1.SaveAs("LYAnalysis/ctrVslyTofNorm_ProdDifferentColors"+geo+ext)
 
 leg.Clear()
 histos['lyRatio'].Rebin(2)
@@ -317,7 +387,7 @@ text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
 text.SetTextSize(0.05)
 text.DrawLatexNDC(0.6,0.47,"#sigma=%2.1f#pm%3.1f%%"%(histos['lyRatio'].GetFunction("gaus").GetParameter(2)*100,histos['lyRatio'].GetFunction("gaus").GetParError(2)*100))
 text.SetTextSize(0.04)
-for ext in ['.pdf','.png','.C']:
+for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/lyRatioUnStacked_ProdDifferentColors"+ext)
 
 #mainHisto=''
@@ -355,7 +425,7 @@ text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
 text.SetTextSize(0.05)
 text.DrawLatexNDC(0.6,0.47,"#sigma=%2.1f#pm%3.1f%%"%(histos['lyRatio'].GetFunction("gaus").GetParameter(2)*100,histos['lyRatio'].GetFunction("gaus").GetParError(2)*100))
 text.SetTextSize(0.04)
-for ext in ['.pdf','.png','.C']:
+for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/lyRatio_ProdDifferentColors"+ext)
 
 
