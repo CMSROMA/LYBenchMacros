@@ -8,30 +8,35 @@ crystalsDB={
         'runs'  :  [ 
             { 
                 'tag' : 'IRR0', 
+                'dose' : 0, 
                 'runs' : [ 'BAR000041-WS3-NW-NC-P2-SL-H2-20191118-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191118-1', 'REF-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'ledRuns' : [ 'LED-20191118-1' ] 
             },
             { 
                 'tag' : 'IRR9K_1H_T15M',
+                'dose' : 9000, 
                 'runs' : [ 'BAR000041-IRR10K-WS3-NW-NC-P2-SL-H2-20191118-1','BAR000041-IRR10K-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191118-1', 'REF-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'ledRuns' : [ 'LED-20191118-1' ] 
             },
             { 
                 'tag' : 'IRR9K_1H_T48H',
+                'dose' : 9000, 
                 'runs' : [ 'BAR000041-IRR9K-WS3-NW-NC-P2-SL-H2-20191120-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191120-1', 'REF-WS3-NW-NC-P2-SL-H2-20191120-3' ], 
                 'ledRuns' : [ 'LED-20191120-SCAN-1','LED-20191120-SCAN-2' ] 
             },
             { 
                 'tag' : 'IRR9K_1H_T72H',
+                'dose' : 9000, 
                 'runs' : [ 'BAR000041-IRR9K-WS3-NW-NC-P2-SL-H2-20191121-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191121-1', 'REF-WS3-NW-NC-P2-SL-H2-20191121-3' ], 
                 'ledRuns' : [ 'LED-20191121-SCAN-2','LED-20191121-SCAN-3' ] 
             },
             { 
                 'tag' : 'IRR9K_1H_T96H',
+                'dose' : 9000, 
                 'runs' : [ 'BAR000041-IRR9K-WS3-NW-NC-P2-SL-H2-20191122-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191122-2', 'REF-WS3-NW-NC-P2-SL-H2-20191122-3', 'REF-WS3-NW-NC-P2-SL-H2-20191122-4' ], 
                 'ledRuns' : [ 'LED-20191122-SCAN-2','LED-20191122-SCAN-3' ] 
@@ -46,25 +51,29 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 
             { 
-                'tag' : 'IRR0', 
+                'tag' : 'IRR0',
+                'dose' : 0,  
                 'runs' : [ 'BAR000040-WS3-NW-NC-P2-SL-H2-20191118-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191118-1', 'REF-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'ledRuns' : [ 'LED-20191118-1' ] 
             },
             { 
                 'tag' : 'IRR2_1H_T16H',
+                'dose' : 2, 
                 'runs' : [ 'BAR000040-IRR2-WS3-NW-NC-P2-SL-H2-20191119-3' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191119-1', 'REF-WS3-NW-NC-P2-SL-H2-20191119-2' ], 
                 'ledRuns' : [ 'LED-20191119-SCAN-1','LED-20191119-SCAN-3' ] 
             },
             { 
                 'tag' : 'IRR9K_5H_T16H',
+                'dose' : 40000, 
                 'runs' : [ 'BAR000040-IRR9K5H-WS3-NW-NC-P2-SL-H2-20191121-2' ],
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191121-1', 'REF-WS3-NW-NC-P2-SL-H2-20191121-3' ], 
                 'ledRuns' : [ 'LED-20191121-SCAN-2','LED-20191121-SCAN-3' ] 
             },
             { 
                 'tag' : 'IRR9K_5H_T48H',
+                'dose' : 40000, 
                 'runs' : [ 'BAR000040-IRR9K5H-WS3-NW-NC-P2-SL-H2-20191122-1' ],
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191122-2', 'REF-WS3-NW-NC-P2-SL-H2-20191122-3', 'REF-WS3-NW-NC-P2-SL-H2-20191122-4' ], 
                 'ledRuns' : [ 'LED-20191122-SCAN-2','LED-20191122-SCAN-3' ] 
@@ -80,18 +89,21 @@ crystalsDB={
         'runs'  :  [ 
             { 
                 'tag' : 'IRR0', 
+                'dose' : 0, 
                 'runs' : [ 'BAR000042-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191118-1', 'REF-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'ledRuns' : [ 'LED-20191118-1' ] 
             },
             { 
                 'tag' : 'IRR200_1H_T16H', 
+                'dose' : 200, 
                 'runs' : [ 'BAR000042-IRR200-WS3-NW-NC-P2-SL-H2-20191119-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191119-1', 'REF-WS3-NW-NC-P2-SL-H2-20191119-2' ], 
                 'ledRuns' : [ 'LED-20191119-SCAN-1','LED-20191119-SCAN-3' ] 
             },
             { 
                 'tag' : 'IRR200_1H_T32H', 
+                'dose' : 200, 
                 'runs' : [ 'BAR000042-IRR200-WS3-NW-NC-P2-SL-H2-20191120-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191120-1', 'REF-WS3-NW-NC-P2-SL-H2-20191120-3' ], 
                 'ledRuns' : [ 'LED-20191120-SCAN-1','LED-20191120-SCAN-2' ] 
@@ -107,18 +119,21 @@ crystalsDB={
         'runs'  :  [ 
             { 
                 'tag' : 'IRR0', 
+                'dose' : 0, 
                 'runs' : [ 'BAR000043-WS3-NW-NC-P2-SL-H2-20191118-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191118-1', 'REF-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'ledRuns' : [ 'LED-20191118-1' ] 
             },
             { 
                 'tag' : 'IRR2K_1H_T16H', 
+                'dose' : 2000, 
                 'runs' : [ 'BAR000043-IRR2K-WS3-NW-NC-P2-SL-H2-20191119-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191119-1', 'REF-WS3-NW-NC-P2-SL-H2-20191119-2' ], 
                 'ledRuns' : [ 'LED-20191119-SCAN-1','LED-20191119-SCAN-3' ] 
             },
             { 
                 'tag' : 'IRR2K_1H_T32H', 
+                'dose' : 2000, 
                 'runs' : [ 'BAR000043-IRR2K-WS3-NW-NC-P2-SL-H2-20191120-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191120-1', 'REF-WS3-NW-NC-P2-SL-H2-20191120-3' ], 
                 'ledRuns' : [ 'LED-20191120-SCAN-1','LED-20191120-SCAN-2' ] 
@@ -134,19 +149,22 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 
             { 
-                'tag' : 'IRR0', 
+                'tag' : 'IRR0',
+                'dose' : 0,  
                 'runs' : [ 'BAR000055-WS3-NW-NC-P2-SL-H2-20191118-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191118-1', 'REF-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'ledRuns' : [ 'LED-20191118-1' ] 
             },
             { 
                 'tag' : 'IRR20_1H_T16H', 
+                'dose' : 20,  
                 'runs' : [ 'BAR000055-IRR20-WS3-NW-NC-P2-SL-H2-20191119-2' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191119-1', 'REF-WS3-NW-NC-P2-SL-H2-20191119-2' ], 
                 'ledRuns' : [ 'LED-20191119-SCAN-1','LED-20191119-SCAN-3' ] 
             },
             { 
                 'tag' : 'IRR20_14H_T16H', 
+                'dose' : 300,  
                 'runs' : [ 'BAR000055-IRR2014H-WS3-NW-NC-P2-SL-H2-20191121-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191121-1', 'REF-WS3-NW-NC-P2-SL-H2-20191121-3' ], 
                 'ledRuns' : [ 'LED-20191121-SCAN-2','LED-20191121-SCAN-3' ] 
@@ -162,25 +180,29 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 
             { 
-                'tag' : 'IRR0', 
+                'tag' : 'IRR0',
+                'dose' : 0,   
                 'runs' : [ 'BAR000056-WS3-NW-NC-P2-SL-H2-20191118-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191118-1', 'REF-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'ledRuns' : [ 'LED-20191118-1' ] 
             },
             { 
                 'tag' : 'IRR200_1H_T16H', 
+                'dose' : 200,   
                 'runs' : [ 'BAR000056-IRR200-WS3-NW-NC-P2-SL-H2-20191119-2' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191119-1', 'REF-WS3-NW-NC-P2-SL-H2-20191119-2' ], 
                 'ledRuns' : [ 'LED-20191119-SCAN-1','LED-20191119-SCAN-3' ] 
             },
             { 
                 'tag' : 'IRR200_1H_T32H', 
+                'dose' : 200,   
                 'runs' : [ 'BAR000056-IRR200-WS3-NW-NC-P2-SL-H2-20191120-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191120-1', 'REF-WS3-NW-NC-P2-SL-H2-20191120-3' ], 
                 'ledRuns' : [ 'LED-20191120-SCAN-1','LED-20191120-SCAN-2' ] 
             },
             { 
                 'tag' : 'IRR200_14H_T16H', 
+                'dose' : 3000,   
                 'runs' : [ 'BAR000056-IRR20014H-WS3-NW-NC-P2-SL-H2-20191121-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191121-1', 'REF-WS3-NW-NC-P2-SL-H2-20191121-3' ], 
                 'ledRuns' : [ 'LED-20191121-SCAN-2','LED-20191121-SCAN-3' ] 
@@ -196,25 +218,29 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 
             { 
-                'tag' : 'IRR0', 
+                'tag' : 'IRR0',
+                'dose' : 0,    
                 'runs' : [ 'BAR000057-WS3-NW-NC-P2-SL-H2-20191118-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191118-1', 'REF-WS3-NW-NC-P2-SL-H2-20191118-2' ], 
                 'ledRuns' : [ 'LED-20191118-1' ] 
             },
             { 
                 'tag' : 'IRR2K_1H_T16H', 
+                'dose' : 2000,    
                 'runs' : [ 'BAR000057-IRR2000-WS3-NW-NC-P2-SL-H2-20191119-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191119-1', 'REF-WS3-NW-NC-P2-SL-H2-20191119-2' ], 
                 'ledRuns' : [ 'LED-20191119-SCAN-1','LED-20191119-SCAN-3' ] 
             },
             { 
                 'tag' : 'IRR2K_1H_T32H', 
+                'dose' : 2000,    
                 'runs' : [ 'BAR000057-IRR2K-WS3-NW-NC-P2-SL-H2-20191120-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191120-1', 'REF-WS3-NW-NC-P2-SL-H2-20191120-3' ], 
                 'ledRuns' : [ 'LED-20191120-SCAN-1','LED-20191120-SCAN-2' ] 
             },
             { 
                 'tag' : 'IRR2K_14H_T16H', 
+                'dose' : 30000,    
                 'runs' : [ 'BAR000057-IRR2K14H-WS3-NW-NC-P2-SL-H2-20191121-1' ], 
                 'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-H2-20191121-1', 'REF-WS3-NW-NC-P2-SL-H2-20191121-3' ], 
                 'ledRuns' : [ 'LED-20191121-SCAN-2','LED-20191121-SCAN-3' ] 
