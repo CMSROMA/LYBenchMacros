@@ -59,9 +59,9 @@ for crys in crystalsData:
         continue
     
     if (args.bench=='pmt'):
-        xtalsData[myId]={ 'LY_REL_IRR0': crys.ly/crys.ref, 'LY_ABS_IRR0': crys.ly/crys.pe, 'DT_IRR0':crys.dt }
+        xtalsData[myId]={ 'LY_ABS_IRR0': crys.ly/crys.pe, 'LY_NORM_IRR0': crys.ly/crys.ref, 'DT_IRR0':crys.dt }
     elif (args.bench=='tofpet'):
-        xtalsData[myId]={ 'LY_ABS_IRR0': crys.ly, 'LY_REL_IRR0': crys.ly/crys.lyRef, 'CTR_ABS_IRR0': mt.sqrt(crys.ctr*crys.ctr - 90*90), 'CTR_REL_IRR0': mt.sqrt(crys.ctr*crys.ctr - 90*90) }
+        xtalsData[myId]={ 'LY_ABS_IRR0': crys.ly, 'LY_NORM_IRR0': crys.ly/crys.lyRef, 'CTR_ABS_IRR0': mt.sqrt(crys.ctr*crys.ctr - 90*90), 'CTR_NORM_IRR0': mt.sqrt(crys.ctr*crys.ctr - 90*90)/mt.sqrt(crys.ctrRef*crys.ctrRef - 90*90) }
 
 data={}
 for prod in producers: 
@@ -84,10 +84,11 @@ for crys in crystalsData:
     m=re.search('^T(\d+)([HDM]).*',timeTag) #match the time tag format
     #skip measurements which are too fresh <15H
     if (m):
-        if (m.group(2) == 'M' ):
-            continue
-        if (m.group(2) == 'H' and int(m.group(1))<15):
-            continue
+        if ( not thisTag=='IRR0' ):
+            if (m.group(2) == 'M' ):
+                continue
+            if (m.group(2) == 'H' and int(m.group(1))<15):
+                continue
     else:
         if ( not thisTag=='IRR0' ):
             continue
@@ -105,19 +106,35 @@ for crys in crystalsData:
     newTag='%s%s_%s'%(xtalType.upper(),str(myId).zfill(5),thisTag.upper())
 
     if (args.bench == 'pmt'):
-        lyNormRel=(crys.ly/crys.ref)/xtalsData[myId]['LY_REL_IRR0']
+
         lyRel=(crys.ly/crys.pe)/xtalsData[myId]['LY_ABS_IRR0']
+        lyAbs=(crys.ly/crys.pe/670.) #normalize to have this around 1 
+        lyNorm=(crys.ly/crys.ref)
+        lyNormRel=(lyNorm)/xtalsData[myId]['LY_NORM_IRR0']
+
         if (not newTag in data[prod].keys()):
             data[prod][newTag]=[]
-        data[prod][newTag].append({'lyNormRel':lyNormRel,'lyRel':lyRel,'dt':crys.dt,'dose':myDose})
+
+        data[prod][newTag].append({'lyNormRel':lyNormRel,'lyRel':lyRel,'lyAbs':lyAbs,'lyNormAbs':lyNorm,'dt':crys.dt,'dose':myDose})
+
     elif (args.bench == 'tofpet'):
-        lyRel=(crys.ly/crys.lyRef)/xtalsData[myId]['LY_REL_IRR0']
-        ctrRel=mt.sqrt(crys.ctr*crys.ctr - 90*90)/xtalsData[myId]['CTR_REL_IRR0']
+
+        lyAbs=crys.ly/85.
+        lyRel=(crys.ly)/xtalsData[myId]['LY_ABS_IRR0']
+
+        lyNormAbs=crys.ly/crys.lyRef
+        lyNormRel=(lyNormAbs)/xtalsData[myId]['LY_NORM_IRR0']
+
         ctrAbs=mt.sqrt(crys.ctr*crys.ctr - 90*90)
-        lyAbs=crys.ly/crys.lyRef
+        ctrRel=ctrAbs/xtalsData[myId]['CTR_ABS_IRR0']
+
+        ctrNormAbs=mt.sqrt(crys.ctr*crys.ctr - 90*90)/mt.sqrt(crys.ctrRef*crys.ctrRef - 90*90)
+        ctrNormRel=ctrNormAbs/xtalsData[myId]['CTR_NORM_IRR0']
+
         if (not newTag in data[prod].keys()):
             data[prod][newTag]=[]
-        data[prod][newTag].append({'ctrAbs':ctrAbs,'lyRel':lyRel,'lyAbs':lyAbs, 'ctrRel':ctrRel,'dose':myDose })
+
+        data[prod][newTag].append({'lyNormRel':lyNormRel,'lyNormAbs':lyNormAbs, 'lyRel':lyRel,'lyAbs':lyAbs, 'ctrAbs':ctrAbs, 'ctrRel':ctrRel, 'ctrNormAbs':ctrNormAbs, 'ctrNormRel':ctrNormRel, 'dose':myDose })
 
 resultsByTag={} #this will be used later as output in csv 
 
@@ -206,7 +223,7 @@ leg1.SetFillColorAlpha(0,0)
 leg1.SetTextSize(0.03)
 
 if (args.bench=='pmt'):
-    graphs=['lyNormRel','lyRel']
+    graphs=['lyRel','lyAbs','lyNormRel','lyNormAbs']
     for g in graphs:
         c1.SetLogx(1)
         histos[g+'ExpFitIntercept']=R.TH1F(g+'ExpFitIntercept',g+'ExpFitIntercept',100,0.8,1.2)
@@ -318,7 +335,7 @@ if (args.bench=='pmt'):
             c1.SaveAs(args.output+"/"+g+"VsDose"+ext)
 
 elif (args.bench=='tofpet'):
-    graphs=['lyRel', 'lyAbs', 'ctrRel', 'ctrAbs']
+    graphs=[ 'lyNormRel', 'lyNormAbs', 'lyRel', 'lyAbs', 'ctrRel', 'ctrAbs']
     for g in graphs:
         c1.SetLogx(1)
         histos[g+'ExpFitIntercept']=R.TH1F(g+'ExpFitIntercept',g+'ExpFitIntercept',100,0.8,1.2)
@@ -332,7 +349,6 @@ elif (args.bench=='tofpet'):
         histos[g+'ExpFitSlopeVsProducer'].SetName(g+'ExpFitSlopeVsProducer')
         histos[g+'ExpFitSlopeVsProducer'].SetTitle(g+'ExpFitSlopeVsProducer')
         
-
         a=R.TH2F("a","a",10,1,100000,10,0.5,1.3)
         a.GetXaxis().SetTitle("Dose [Gy]")
         a.GetYaxis().SetTitle("LO/LO_{befIrr}")
@@ -360,7 +376,7 @@ elif (args.bench=='tofpet'):
             histos[g+'VsDose_'+prod].SetMarkerColor(1+i)
             histos[g+'VsDose_'+prod].SetLineColor(1+i)
             histos[g+'VsDose_'+prod].SetLineStyle(1+int(i/4))
-            if ('lyRel' in g):
+            if ( ('lyRel' in g) or ('lyNormRel' in g) ):
                 print g
                 histos[g+'VsDose_'+prod].Fit("expo")
                 histos[g+'VsDose_'+prod].GetFunction("expo").SetLineColor(1+i)
@@ -382,8 +398,9 @@ elif (args.bench=='tofpet'):
                 histos[g+'VsDose_'+prod].SetLineStyle(1+int(i/4))
                 histos[g+'VsDose_'+prod].Draw("PLSAME")
 
-        if ('lyRel' in g):
+        if ( ('lyRel' in g ) or ('lyNormRel' in g ) ):
             leg.Draw()
+
         text.DrawLatexNDC(0.12,0.91,"CMS Rome - TOFPET Bench")
         for ext in ['.pdf','.png']:
             c1.SaveAs(args.output+"/"+g+"VsDose"+ext)
@@ -399,7 +416,7 @@ elif (args.bench=='tofpet'):
             for ip in range(0,histos[g+'VsDose_'+prod].GetN()):
                 x,y=R.Double(0.),R.Double(0.)
                 histos[g+'VsDose_'+prod].GetPoint(ip,x,y)
-                if ('lyRel' in g):
+                if ( ('lyRel' in g) or ('lyNormRel' in g) ):
                     histos[g+'RescaledVsDose_'+prod].SetPoint(ip,x,y/histos[g+'VsDose_'+prod].GetFunction("expo").Eval(0))
                 else:
                     histos[g+'RescaledVsDose_'+prod].SetPoint(ip,x,y/histos[g+'VsDose_'+prod].GetFunction("pol0").Eval(0))
@@ -409,7 +426,7 @@ elif (args.bench=='tofpet'):
             histos[g+'RescaledVsDose_'+prod].SetMarkerStyle(20+i)
             histos[g+'RescaledVsDose_'+prod].SetMarkerColor(1+i)
             histos[g+'RescaledVsDose_'+prod].SetLineColor(1+i)
-            if ('lyRel' in g):
+            if ( ('lyRel' in g) or ('lyNormRel' in g)):
                 histos[g+'RescaledVsDose_'+prod].Fit("expo")
                 histos[g+'RescaledVsDose_'+prod].GetFunction("expo").SetLineColor(1+i)
                 histos[g+'RescaledVsDose_'+prod].GetFunction("expo").SetLineStyle(1+int(i/4))
