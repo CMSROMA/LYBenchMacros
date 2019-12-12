@@ -11,6 +11,8 @@ def Map(tf):
     return m
 
 
+R.gROOT.SetBatch(1)
+
 f=R.TFile("LYIrradAnalysisMerged/LYMergedPlots.root","UPDATE")
 objs=Map(f)
 
@@ -46,8 +48,8 @@ for ext in ['.pdf','.png']:
     c.SaveAs("LYIrradAnalysisMerged/lyNormCorrelation"+ext)
 
 a1={}
-a1_Y_Range={ 'lyNormAbs_AVG' : [0.7,1.2], 'ctr' : [80,200], 'dt': [35,50], 'lyNormAbsOverDt': [0.018,0.028], 'lyNormRelRescaled_AVG' : [0.8,1.1], 'lyNormRelRescaled_AVG_ExpFitSlope' : [-3E-5,2E-5], 'lyNormAbs_Ratio': [0.8,1.2] }
-a1_Y_Title={ 'lyNormAbs_AVG' : 'LY/LY_{ref} (PMT+TOFPET)', 'ctr' : '#sigma_{t} [ps]', 'dt': 'Decay time [ns]' , 'lyNormAbsOverDt': 'Normalized LY/Decay time [ns^{-1}]', 'lyNormRelRescaled_AVG' : 'LY_{bef}/LY_{aft} (PMT+TOFPET)', 'lyNormRelRescaled_AVG_ExpFitSlope': 'Exp Fit Slope', 'lyNormAbs_Ratio' : 'LY(PMT)/LY(TOFPET)'}
+a1_Y_Range={ 'lyNormAbs_AVG' : [0.7,1.2], 'ctr' : [80,200], 'dt': [35,50], 'lyNormAbsOverDt': [0.018,0.028], 'lyNormRelRescaled_AVG' : [0.8,1.1], 'lyNormRelRescaled_AVG_ExpFitSlope' : [-3E-5,2E-5], 'lyNormAbs_Ratio': [0.8,1.2], 'lyNormRel_AVG' : [0.8,1.1] }
+a1_Y_Title={ 'lyNormAbs_AVG' : 'LY/LY_{ref} (PMT+TOFPET)', 'ctr' : '#sigma_{t} [ps]', 'dt': 'Decay time [ns]' , 'lyNormAbsOverDt': 'Normalized LY/Decay time [ns^{-1}]', 'lyNormRelRescaled_AVG' : 'LY_{bef}/LY_{aft} (PMT+TOFPET)', 'lyNormRelRescaled_AVG_ExpFitSlope': 'Exp Fit Slope', 'lyNormAbs_Ratio' : 'LY(PMT)/LY(TOFPET)', 'lyNormRel_AVG' : 'LY_{bef}/LY_{aft} (PMT+TOFPET)'}
 
 labels={ '': 'Before Irr', '_IRR9K':'9 kGy' }
 
@@ -118,6 +120,8 @@ for ext in ['.pdf','.png']:
     c.SaveAs("LYIrradAnalysisMerged/lyNormRelRescaled_AVG_VsDose"+ext)
 c.SetLogx(0)        
 
+R.gStyle.SetOptFit(111111)
+
 for ig,g in enumerate(['lyNormRelRescaled_AVG']):
     a1[g]=R.TH2F("a1_"+g,"a1_"+g,10,0,10,10,a1_Y_Range[g][0],a1_Y_Range[g][1])
     a1[g].GetXaxis().SetTitle("Prod #")
@@ -138,7 +142,6 @@ for ig,g in enumerate(['lyNormRelRescaled_AVG']):
     for ext in ['.pdf','.png']:
         c.SaveAs("LYIrradAnalysisMerged/"+g+"ByProd"+ext)
 
-R.gStyle.SetOptFit(111111)
 for ig,g in enumerate(['lyNormRelRescaled_AVG_ExpFitSlope']):
     a1[g]=R.TH2F("a1_"+g,"a1_"+g,10,0,10,10,a1_Y_Range[g][0],a1_Y_Range[g][1])
     a1[g].GetXaxis().SetTitle("Prod #")

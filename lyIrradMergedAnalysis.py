@@ -42,6 +42,10 @@ for prod in producers:
         histos['lyNormAbs_'+bench+'_IRR9K_'+prod]=R.TH1F('lyNormAbs_'+bench+'_IRR9K_'+prod,'lyNormAbs_'+bench+'_'+prod,100,0.5,1.5)
         histos['lyNormRelRescaled_'+bench+'_IRR9K_'+prod]=R.TH1F('lyNormRelRescaled_'+bench+'_IRR9K_'+prod,'lyNormRelRescaled_'+bench+'_IRR9K_'+prod,100,0.5,1.5)
 
+        histos['lyNormRel_'+bench+'_VsDose_'+prod]=R.TGraphErrors(10)#max size 10
+        histos['lyNormRel_'+bench+'_VsDose_'+prod].SetName('lyNormRel_'+bench+'_VsDose_'+prod)
+        index['lyNormRel_'+bench+'_VsDose_'+prod]=0
+
     histos['lyNormAbs_Ratio_'+prod]=R.TH1F('lyNormAbs_Ratio_'+prod,'lyNormAbs_Ratio_xs'+prod,100,0.5,1.5)
     histos['lyNormAbs_Ratio_IRR9K_'+prod]=R.TH1F('lyNormAbs_Ratio_IRR9K_'+prod,'lyNormAbs_Ratio_IRR9K_'+prod,100,0.5,1.5)
     histos['dt_'+prod]=R.TH1F('dt_'+prod,'dt_'+prod,100,20.,50.)
@@ -50,12 +54,6 @@ for prod in producers:
     histos['ctr_IRR9K_'+prod]=R.TH1F('ctr_IRR9K_'+prod,'ctr_IRR9K_'+prod,100,50.,250.)
     histos['lyNormAbsOverDt_'+prod]=R.TH1F('lyNormAbsOverDt_'+prod,'lyNormAbsOverDt_'+prod,100,0.02,0.03)
     histos['lyNormAbsOverDt_IRR9K_'+prod]=R.TH1F('lyNormAbsOverDt_IRR9K_'+prod,'lyNormAbsOverDt_IRR9K_'+prod,100,0.02,0.03)
-
-    for bench in ['PMT','TOFPET','AVG']:
-        histos['lyNormRel_'+bench+'_VsDose_'+prod]=R.TGraphErrors(10)#max size 10
-        histos['lyNormRel_'+bench+'_VsDose_'+prod].SetName('lyNormRel_'+bench+'_VsDose_'+prod)
-        index['lyNormRel_'+bench+'_VsDose_'+prod]=0
-        histos['lyNormRelRescaled_'+bench+'_IRR9K_'+prod]=R.TH1F('lyNormRelRescaled_'+bench+'_IRR9K_'+prod,'lyNormRelRescaled_'+bench+'_IRR9K_'+prod,100,0.5,1.5)
 
     for g in ['ctrAbsVsLYAbsOverDt']:
         histos[g+'_'+prod]=R.TGraphErrors(crystalsData.GetEntries())
