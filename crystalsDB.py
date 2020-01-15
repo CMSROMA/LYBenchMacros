@@ -35,7 +35,7 @@ crystalsDB={
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000031-WS3-NW-NC-P2-SL-H2-20190722' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190722-1', 'REF-WS3-NW-NC-P2-SL-20190722-2' ],
-        'ledRuns' : [ 'LED-20190722-SCAN-1', 'LED-20190722-SCAN-2', 'LED-20190722-SCAN-4' ]
+        'ledRuns' : [ 'LED-20190722-SCAN-1', 'LED-20190722-SCAN-4' ]
     },
 
 ### Geo2
@@ -99,7 +99,7 @@ crystalsDB={
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000033-WS3-NW-NC-P2-SL-H2-20190722' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190722-1', 'REF-WS3-NW-NC-P2-SL-20190722-2' ],
-        'ledRuns' : [ 'LED-20190722-SCAN-1', 'LED-20190722-SCAN-2', 'LED-20190722-SCAN-4' ]
+        'ledRuns' : [ 'LED-20190722-SCAN-1', 'LED-20190722-SCAN-4' ]
     },
 
 
@@ -260,7 +260,7 @@ crystalsDB={
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000049-WS3-NW-NC-P2-SL-H3' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000050":
@@ -269,7 +269,7 @@ crystalsDB={
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000050-WS3-NW-NC-P2-SL-H3' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000051":
@@ -278,7 +278,7 @@ crystalsDB={
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000051-WS3-NW-NC-P2-SL-H3' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000052":
@@ -287,7 +287,7 @@ crystalsDB={
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000052-WS3-NW-NC-P2-SL-H3' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000053":
@@ -296,7 +296,7 @@ crystalsDB={
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000053-WS3-NW-NC-P2-SL-H3', 'BAR000053-WS3-NW-NC-P2-SL-H3-TP2' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
 ### Geo2
@@ -307,7 +307,7 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000054-WS3-NW-NC-P2-SL-H2' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000055":
@@ -316,7 +316,7 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000055-WS3-NW-NC-P2-SL-H2' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000056":
@@ -325,7 +325,7 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000056-WS3-NW-NC-P2-SL-H2' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000057":
@@ -334,7 +334,7 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000057-WS3-NW-NC-P2-SL-H2' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000058":
@@ -343,7 +343,7 @@ crystalsDB={
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000058-WS3-NW-NC-P2-SL-H2' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
 ### Geo3
@@ -354,7 +354,7 @@ crystalsDB={
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000059-WS3-NW-NC-P2-SL-H1' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000060":
@@ -363,7 +363,7 @@ crystalsDB={
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000060-WS3-NW-NC-P2-SL-H1' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000061":
@@ -372,7 +372,7 @@ crystalsDB={
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000061-WS3-NW-NC-P2-SL-H1' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000062":
@@ -381,7 +381,7 @@ crystalsDB={
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000062-WS3-NW-NC-P2-SL-H1' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
     "BAR000063":
@@ -390,7 +390,7 @@ crystalsDB={
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000063-WS3-NW-NC-P2-SL-H1', 'BAR000063-WS3-NW-NC-P2-SL-H1-TP2' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190710-1','REF-WS3-NW-NC-P2-SL-20190710-2' ],
-        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-2', 'LED-20190710-SCAN-3' ]
+        'ledRuns' : [ 'LED-20190710-SCAN-1', 'LED-20190710-SCAN-3' ]
     },
 
 
@@ -549,7 +549,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000072-WS3-NW-NC-P2-SL-H3-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -558,7 +558,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000073-WS3-NW-NC-P2-SL-H3-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -567,7 +567,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000074-WS3-NW-NC-P2-SL-H3-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -576,7 +576,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000075-WS3-NW-NC-P2-SL-H3-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -585,7 +585,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo1',
         'runs'  :  [ 'BAR000076-WS3-NW-NC-P2-SL-H3-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -596,7 +596,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000077-WS3-NW-NC-P2-SL-H2-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -604,18 +604,18 @@ crystalsDB={
     {
         'producer' : 'prod5',
         'geometry' : 'geo2',
-        'runs'  :  [ 'BAR000078-WS3-NW-NC-P2-SL-H2-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
-        'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
+        'runs'  :  [ 'BAR000078-WS3-NW-NC-P2-SL-H2-20190715', 'BAR000078-WS3-NW-NC-P2-SL-H2-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2', 'REF-WS3-NW-NC-P2-SL-20191022-1' ],
+        'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2', 'LED-20191022-SCAN-1'  ]
     },
 
     "BAR000079":
     {
         'producer' : 'prod5',
         'geometry' : 'geo2',
-        'runs'  :  [ 'BAR000079-WS3-NW-NC-P2-SL-H2-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
-        'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
+        'runs'  :  [ 'BAR000079-WS3-NW-NC-P2-SL-H2-20190715', 'BAR000079-WS3-NW-NC-P2-SL-H2-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2', 'REF-WS3-NW-NC-P2-SL-20191022-1' ],
+        'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2', 'LED-20191022-SCAN-1' ]
     },
 
     "BAR000080":
@@ -623,7 +623,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000080-WS3-NW-NC-P2-SL-H2-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -632,7 +632,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000100-WS3-NW-NC-P2-SL-H2-20190712-1' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190712-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190712-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190712-SCAN-1', 'LED-20190712-SCAN-2' ]
     },
 
@@ -643,7 +643,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo2',
         'runs'  :  [ 'BAR000081-WS3-NW-NC-P2-SL-H1-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -652,7 +652,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000082-WS3-NW-NC-P2-SL-H1-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -661,7 +661,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000083-WS3-NW-NC-P2-SL-H1-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -670,7 +670,7 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000084-WS3-NW-NC-P2-SL-H1-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
 
@@ -679,9 +679,29 @@ crystalsDB={
         'producer' : 'prod5',
         'geometry' : 'geo3',
         'runs'  :  [ 'BAR000085-WS3-NW-NC-P2-SL-H1-20190715' ],
-        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190712-2' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190715-1', 'REF-WS3-NW-NC-P2-SL-20190715-2' ],
         'ledRuns' : [ 'LED-20190715-SCAN-1', 'LED-20190715-SCAN-2' ]
     },
+
+### Fast crystals
+
+#    "BAR000170":
+#    {
+#        'producer' : 'prod5',
+#        'geometry' : 'geo2',
+#        'runs'  :  [ 'BAR000170-WS3-NW-NC-P2-SL-H2-20191022' ],
+#        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1' ],
+#        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+#    },
+#    "BAR000171":
+#    {
+#        'producer' : 'prod5',
+#        'geometry' : 'geo2',
+#        'runs'  :  [ 'BAR000171-WS3-NW-NC-P2-SL-H2-20191022' ],
+#        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1' ],
+#        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+#    },
+#
 
 #################################
 ###### Prod6 ####################
@@ -1040,5 +1060,166 @@ crystalsDB={
         'runs'  :  [ 'BAR000139-WS3-NW-NC-P2-SL-H2-20190911-2' ],
         'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20190911-2','REF-WS3-NW-NC-P2-SL-20190911-3','REF-WS3-NW-NC-P2-SL-20190911-4'],
         'ledRuns' : [ 'LED-20190913-SCAN-1' ]
-    }    
+    },
+    "BAR000155":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000155-WS3-NW-NC-P2-SL-H2-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
+    "BAR000156":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000156-WS3-NW-NC-P2-SL-H2-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
+    "BAR000157":
+    {
+        'producer' : 'prod7',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000157-WS3-NW-NC-P2-SL-H2-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
+    
+
+
+
+
+
+#################################                                                                                                                                                                           
+###### Prod9 ####################                                                                                                                                                                           
+#################################                                                                                                                                                                           
+### Geo1 
+
+    "BAR000140":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000140-WS3-NW-NC-P2-SL-H3-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+    "BAR000141":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000141-WS3-NW-NC-P2-SL-H3-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+    "BAR000142":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000142-WS3-NW-NC-P2-SL-H3-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
+    "BAR000143":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000143-WS3-NW-NC-P2-SL-H3-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
+    "BAR000144":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo1',
+        'runs'  :  [ 'BAR000144-WS3-NW-NC-P2-SL-H3-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
+
+### Geo2
+
+    "BAR000145":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000145-WS3-NW-NC-P2-SL-H2-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+    "BAR000146":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000146-WS3-NW-NC-P2-SL-H2-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+    "BAR000147":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000147-WS3-NW-NC-P2-SL-H2-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+    "BAR000148":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000148-WS3-NW-NC-P2-SL-H2-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+    "BAR000149":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo2',
+        'runs'  :  [ 'BAR000149-WS3-NW-NC-P2-SL-H2-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+
+### Geo3 
+
+    "BAR000150":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo3',
+        'runs'  :  [ 'BAR000150-WS3-NW-NC-P2-SL-H1-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+    "BAR000151":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo3',
+        'runs'  :  [ 'BAR000151-WS3-NW-NC-P2-SL-H1-20191022' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191022-1'],
+        'ledRuns' : [ 'LED-20191022-SCAN-1' ]
+    },
+    "BAR000152":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo3',
+        'runs'  :  [ 'BAR000152-WS3-NW-NC-P2-SL-H1-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
+    "BAR000153":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo3',
+        'runs'  :  [ 'BAR000153-WS3-NW-NC-P2-SL-H1-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
+    "BAR000154":
+    {
+        'producer' : 'prod9',
+        'geometry' : 'geo3',
+        'runs'  :  [ 'BAR000154-WS3-NW-NC-P2-SL-H1-20191105' ],
+        'refRuns'  : [ 'REF-WS3-NW-NC-P2-SL-20191105-1'],
+        'ledRuns' : [ 'LED-20191105-SCAN-1' ]
+    },
 }

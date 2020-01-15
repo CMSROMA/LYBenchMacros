@@ -16,11 +16,24 @@ def Map(tf):
         m[n] = tf.Get(n)
     return m
 
+def integral(g,xmin,xmax):
+    v=0
+    x=g.GetX()
+    y=g.GetY()
+    for i in range(0,g.GetN()):
+        if x[i]<xmin:
+            continue
+        if x[i]>xmax:
+            break
+        v=v+y[i]
+    return v
+
 def LYAnalysis(crystal,crystalInfo):
     files={}
 
-    ly , dt = array('d'), array('d')
+    ly , dt, i0, i1, i2, i3 = array('d'), array('d'), array('d'), array('d'), array('d'), array('d')
     for r in crystalInfo['runs']:
+#        print("Opening SourceAnalysis/SourceAnalysis_"+r+".root")
         files[r]=R.TFile.Open("SourceAnalysis/SourceAnalysis_"+r+".root")
         objs=Map(files[r])
 
@@ -30,6 +43,9 @@ def LYAnalysis(crystal,crystalInfo):
         if not 'filteredWaveform_spill0' in objs.keys():
             print "Bad Run (no waveform): "+r
             continue
+#        if not 'waveform_spill0' in objs.keys():
+#            print "Bad Run (no waveform): "+r
+#            continue
 
         if (objs['charge_spill0'].GetFunction('fTot').GetParameter(10)<1000) or (objs['charge_spill0'].GetFunction('fTot').GetParameter(10)>100000):
             print "Bad Run (strange fit): "+r
@@ -37,6 +53,10 @@ def LYAnalysis(crystal,crystalInfo):
 
         ly.append(objs['charge_spill0'].GetFunction('fTot').GetParameter(10))
         dt.append(objs['filteredWaveform_spill0'].GetFunction("f2").GetParameter(1))
+        i0.append(integral(objs['filteredWaveform_spill0'],0,30))
+        i1.append(integral(objs['filteredWaveform_spill0'],0,50))
+        i2.append(integral(objs['filteredWaveform_spill0'],0,300))
+        i3.append(integral(objs['filteredWaveform_spill0'],0,450))
 
     if len(ly)==0:
         print "No good LY data for "+crystal
@@ -49,6 +69,31 @@ def LYAnalysis(crystal,crystalInfo):
         dtAvg=-9999
     else:
         dtAvg=sum(dt)/len(dt)
+
+    if len(i0)==0:
+        print "No good waveform for "+crystal
+        i0Avg=-9999
+    else:
+        i0Avg=sum(i0)/len(i0)
+
+    if len(i1)==0:
+        print "No good waveform for "+crystal
+        i1Avg=-9999
+    else:
+        i1Avg=sum(i1)/len(i1)
+
+    if len(i2)==0:
+        print "No good waveform for "+crystal
+        i2Avg=-9999
+    else:
+        i2Avg=sum(i2)/len(i2)
+
+    if len(i3)==0:
+        print "No good waveform for "+crystal
+        i3Avg=-9999
+    else:
+        i3Avg=sum(i3)/len(i3)
+
 
     ref=array('d')
     for r in crystalInfo['refRuns']:
@@ -68,7 +113,7 @@ def LYAnalysis(crystal,crystalInfo):
         refAvg=sum(ref)/len(ref)
 
     ledAvg=LEDAnalysis(crystal,crystalInfo['ledRuns'])
-    return { 'ly':lyAvg, 'dt':dtAvg, 'ref':refAvg, 'pe':ledAvg }
+    return { 'ly':lyAvg, 'dt':dtAvg, 'ref':refAvg, 'pe':ledAvg, 'i0':i0Avg, 'i1':i1Avg, 'i2':i2Avg, 'i3':i3Avg }
 
 def LEDAnalysis(crystal,ledRuns):
     files={}
@@ -82,9 +127,9 @@ def LEDAnalysis(crystal,ledRuns):
         if ( abs(objs['PMT_0'].GetParameter(4)-35)<0.01 ):
             print "Bad LED Run (fit not converging): "+r
             continue
-        if ( objs['PMT_4'].GetParameter(1) < 1. ):
-            print "Bad LED Run (small LED amplitude): "+r
-            continue
+#        if ( objs['PMT_4'].GetParameter(1) < 1. ):
+#            print "Bad LED Run (small LED amplitude): "+r
+#            continue
         pe.append(objs['PMT_0'].GetParameter(2))
 
     if len(pe)==0:

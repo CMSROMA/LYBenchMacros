@@ -167,6 +167,7 @@ void SinglePEAnalysis(TString inputFile)
   
   TH1F* adcData= new TH1F("ledData","ledData",400,0,200);
   tree->Project("ledData","charge_tot[C0]");
+  //tree->Project("ledData","charge_sig[C0]");
   adcData->Print();
   //  std::cout << "FIT RANGE " << adcData->GetMean()-3*adcData->GetRMS() << "," << adcData->GetMean()+3*adcData->GetRMS() << std::endl;
   FitResults fr=fitSingleHisto(adcData,16,160);

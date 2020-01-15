@@ -429,6 +429,36 @@ for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/lyRatio_ProdDifferentColors"+ext)
 
 
+maxH=0
+mainHisto=''
+leg.Clear()
+for iprod,prod in enumerate(producers): 
+    histos['ctr_'+prod].Rebin(4)
+    histos['ctr_'+prod].SetStats(0)
+    histos['ctr_'+prod].GetXaxis().SetTitle("#sigma_{t} [ps]")
+    histos['ctr_'+prod].SetLineColor(R.kBlack+iprod)
+    histos['ctr_'+prod].SetLineWidth(3)
+    histos['ctr_'+prod].SetLineStyle(iprod/4+1)
+    histos['ctr_'+prod].SetFillStyle(3001)
+    histos['ctr_'+prod].SetFillColorAlpha(R.kBlack+iprod,0.45)
+    leg.AddEntry(histos['ctr_'+prod],"%s - Mean:%3.1f, RMS:%2.1f"%(prod,histos['ctr_'+prod].GetMean(),histos['ctr_'+prod].GetRMS()),'F')
+
+    if (histos['ctr_'+prod].GetMaximum()>maxH):
+        maxH=histos['ctr_'+prod].GetMaximum()
+
+    if (iprod==0):
+        histos['ctr_'+prod].Draw()
+        mainHisto='ctr_'+prod
+    else:
+        histos['ctr_'+prod].Draw("SAME")
+
+histos[mainHisto].SetMaximum(maxH*1.7)
+histos[mainHisto].GetXaxis().SetRangeUser(450,950)
+leg.Draw()
+text.DrawLatexNDC(0.12,0.91,"CMS Rome - TOFPET")
+for ext in ['.pdf','.png']:
+    c1.SaveAs("LYAnalysis/ctr_ProdDifferentColors"+ext)
+
 
 out=R.TFile("LYAnalysis/LYMergedPlots.root","RECREATE")
 for h,histo in histos.items():
