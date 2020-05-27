@@ -25,18 +25,18 @@ objsCompare={}
 objs['dt']=R.TGraphErrors(nprod)
 objs['dt'].SetName('dt')
 
-objsCompare['dt_ByProd_CERN']=objsCERN['gDT_vendors'].Clone('dt_ByProd_CERN')
+objsCompare['dt_ByProd_CERN']=objsCERN['gDT_TCSPC_vendors'].Clone('dt_ByProd_CERN')
 objsCompare['dt_ByProd_ROME']=objsRome['dt_ByProd'].Clone('dt_ByProd_ROME')
 
 for ip in range(0,nprod):
     xC,yC,xR,yR=R.Double(0),R.Double(0),R.Double(0),R.Double(0)
-    objsCERN['gDT_vendors'].GetPoint(ip,xC,yC)
+    objsCERN['gDT_TCSPC_vendors'].GetPoint(ip,xC,yC)
     objsCompare['dt_ByProd_CERN'].SetPointError(ip,0,0.3)
     objsRome['dt_ByProd'].GetPoint(ip,xR,yR)
 
-    if (xC != xR):
-        print 'Hey!!'
-    objs['dt'].SetPoint(ip,yC,yR)
+#    if (xC != xR):
+#        print 'Hey DT!!'+' '+str(yC)+' '+str(xR)
+    objs['dt'].SetPoint(ip,yC+2.5,yR)
     objs['dt'].SetPointError(ip,0.3,objsRome['dt_ByProd'].GetErrorY(ip))
 
 objs['lyPMT']=R.TGraphErrors(nprod)
@@ -121,15 +121,15 @@ for ip in range(0,nprod+1): #we need also to fill producer 9 for Rome
 
     objsCERN['gLOS_vendors'].GetPoint(ip,xC,yC)
     objsCERN['gLOS_vendors'].GetPoint(0,xCRef,yCRef)
-    objsCERN['gDT_vendors'].GetPoint(ip,xD,yD)
-    objsCERN['gDT_vendors'].GetPoint(0,xDR,yDR)
+    objsCERN['gDT_TCSPC_vendors'].GetPoint(ip,xD,yD)
+    objsCERN['gDT_TCSPC_vendors'].GetPoint(0,xDR,yDR)
 
-    if (xC != xR or xC !=xD or xC != xR_D ):
+    if (xC != xR or xC != xR_D ):
         print 'Hey!!'
-    if (xCRef != xDR or xCRef !=xR_DR):
-        print 'Hey!!'
+#    if (xCRef != xDR or xCRef !=xR_DR):
+#        print 'Hey!!'
 
-    objsCompare['lySOverDt_ByProd_CERN'].SetPoint(ip,xC,(yC/yCRef)/(yD/yDR))
+    objsCompare['lySOverDt_ByProd_CERN'].SetPoint(ip,xC,(yC/yCRef)/((yD+2.5)/(yDR+2.5)))
     objsCompare['lySOverDt_ByProd_CERN'].SetPointError(ip,0,0.03)
 
     objs['lySOverDt'].SetPoint(ip,(yC/yCRef)/(yD/yDR),yR/(yR_D/yR_DR))
@@ -160,15 +160,15 @@ for ip in range(0,nprod): #we need also to fill producer 9 for CERN
 
     objsCERN['gLOS_vendors'].GetPoint(ip,xC,yC)
     objsCERN['gLOS_vendors'].GetPoint(0,xCRef,yCRef)
-    objsCERN['gDT_vendors'].GetPoint(ip,xD,yD)
-    objsCERN['gDT_vendors'].GetPoint(0,xDR,yDR)
+    objsCERN['gDT_TCSPC_vendors'].GetPoint(ip,xD,yD)
+    objsCERN['gDT_TCSPC_vendors'].GetPoint(0,xDR,yDR)
     objsCERN['gTR_ave_vendors'].GetPoint(ip,xCT,yCT)
 
-    if (xC !=xD or xC != xCT):
-        print 'Hey!!'
-        continue
+#    if (xC !=xD or xC != xCT):
+#        print 'Hey!!'
+#        continue
 
-    objs['ctrVSlySOverDtCERN'].SetPoint(ip,(yC/yCRef)/(yD/yDR),yCT*1000)
+    objs['ctrVSlySOverDtCERN'].SetPoint(ip,(yC/yCRef)/((yD+2.5)/(yDR+2.5)),yCT*1000)
     objs['ctrVSlySOverDtCERN'].SetPointError(ip,0.03,3)
 
 objs['lyPOverDt']=R.TGraphErrors(nprod)
@@ -180,18 +180,18 @@ for ip in range(0,nprod):
 
     objsCERN['gLY_vendors'].GetPoint(ip,xC,yC)
     objsCERN['gLY_vendors'].GetPoint(0,xCRef,yCRef)
-    objsCERN['gDT_vendors'].GetPoint(ip,xD,yD)
-    objsCERN['gDT_vendors'].GetPoint(0,xDR,yDR)
+    objsCERN['gDT_TCSPC_vendors'].GetPoint(ip,xD,yD)
+    objsCERN['gDT_TCSPC_vendors'].GetPoint(0,xDR,yDR)
 
     objsRome['lyNormAbs_PMT_ByProd'].GetPoint(ip,xR,yR)
     objsRome['dt_ByProd'].GetPoint(ip,xR_D,yR_D)
     objsRome['dt_ByProd'].GetPoint(0,xR_DR,yR_DR)
-    if (xC != xR or xC !=xD or xC != xR_D ):
-        print 'Hey!!'
-    if (xCRef != xDR or xCRef !=xR_DR):
-        print 'Hey!!'
+#    if (xC != xR or xC !=xD or xC != xR_D ):
+#        print 'Hey!!'
+#    if (xCRef != xDR or xCRef !=xR_DR):
+#        print 'Hey!!'
 
-    objs['lyPOverDt'].SetPoint(ip,(yC/yCRef)/(yD/yDR),yR/(yR_D/yR_DR))
+    objs['lyPOverDt'].SetPoint(ip,(yC/yCRef)/(yD+2.5)/(yDR+2.5),yR/(yR_D/yR_DR))
     objs['lyPOverDt'].SetPointError(ip,0.03,objsRome['lyNormAbs_TOFPET_ByProd'].GetErrorY(ip))
 
 
@@ -212,8 +212,8 @@ for ip in range(0,nprod):
     objsRome['ctr_ByProd'].GetPoint(0,xRRef,yRRef)
     if (xC != xR):
         print 'Hey!!'
-    objs['ctr'].SetPoint(ip,yC*1000,yR)
-    objs['ctr'].SetPointError(ip,3,objsRome['ctr_ByProd'].GetErrorY(ip))
+    objs['ctr'].SetPoint(ip,yC/yCRef,yR/yRRef)
+    objs['ctr'].SetPointError(ip,3/(yCRef*1000),objsRome['ctr_ByProd'].GetErrorY(ip)/yRRef)
 
 out=R.TFile("romeCernCorrelation.root","RECREATE")
 for h,histo in objs.items():
@@ -234,12 +234,12 @@ labels = {
     'lyRomeSVsP': { 'X':'LY_{SiPM} ^{ROME}', 'Y':'LY_{PMT} ^{ROME}' },
     'lySOverDt': { 'X':'LY_{SiPM}/#tau ^{CERN}', 'Y':'LY_{SiPM}/#tau ^{ROME}' },
     'lyPOverDt': { 'X':'LY_{PMT}/#tau ^{CERN}', 'Y':'LY_{PMT}/#tau ^{ROME}' },
-    'ctr': { 'X':'#sigma_{t} ^{CERN} [ps]', 'Y':'#sigma_{t} ^{ROME} [ps]' },
+    'ctr': { 'X':'#sigma_{t}^{CERN}', 'Y':'#sigma_{t} ^{ROME}' },
     'ctr_ByProd': { 'X':'Vendor ID', 'Y':'#sigma_{t} [ps]' },
-    'ctrVSlySOverDtRome': { 'X':'LY_{SiPM}/#tau ^{ROME} [ns^{-1}]', 'Y':'#sigma_{t}^{ROME} [ps]' },
-    'ctrVSlySOverDtCERN': { 'X':'LY_{SiPM}/#tau ^{CERN} [ns^{-1}]', 'Y':'#sigma_{t}^{CERN} [ps]' },
+    'ctrVSlySOverDtRome': { 'X':'LY_{SiPM}/#tau ^{ROME}', 'Y':'#sigma_{t}^{ROME} [ps]' },
+    'ctrVSlySOverDtCERN': { 'X':'LY_{SiPM}/#tau ^{CERN}', 'Y':'#sigma_{t}^{CERN} [ps]' },
     'dt_ByProd': { 'X':'Vendor ID', 'Y':'#tau [ns]' },
-    'lySOverDt_ByProd': { 'X':'Vendor ID', 'Y':'LY_{SiPM}/#tau [ns^{-1}]' },
+    'lySOverDt_ByProd': { 'X':'Vendor ID', 'Y':'LY_{SiPM}/#tau' },
     'lyS_ByProd': { 'X':'Vendor ID', 'Y':'LY_{SiPM}' },
 }
 
@@ -251,7 +251,7 @@ ranges = {
     'lyRomeSVsP': { 'X' : [0.7,1.3] , 'Y' : [0.7,1.3] },
     'lySOverDt': { 'X' : [0.7,1.3] , 'Y' : [0.7,1.3] },
     'lyPOverDt': { 'X' : [0.7,1.3] , 'Y' : [0.7,1.3] },
-    'ctr': { 'X' : [70,110] , 'Y' : [80,200] },
+    'ctr': { 'X' : [0.85,1.3] , 'Y' : [0.8,2.0] },
     'ctr_ByProd': { 'X' : [0,10] , 'Y' : [60,200] },
     'ctrVSlySOverDtRome':{ 'X' : [0.7,1.3] , 'Y' : [70,200] },
     'ctrVSlySOverDtCERN':{ 'X' : [0.7,1.3] , 'Y' : [70,120] },
@@ -268,6 +268,7 @@ text.SetTextSize(0.04)
 
 for k,g in objs.items():
 
+    g.Print()
     g.SetMarkerColor(R.kBlue)
     g.SetMarkerStyle(21)
     g.SetMarkerSize(0.8)
