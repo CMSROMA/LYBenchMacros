@@ -363,7 +363,7 @@ void SinglePEAnalysis_LedScan_Simultaneous_LL(TString inputDir, TString runId, b
       pt->Draw("SAME");
       text->DrawLatexNDC(0.12,0.91,Form("Run ID: %s     LED Voltage: %3.2f V",runId.Data(),led[i]/1000.));
       c->Write(Form("%s/singlePEfit_%s_led%d.root",plotsDir.Data(),runId.Data(),led[i]));
-      c->SaveAs(Form("%s/singlePEfit_%s_led%d.pdf",plotsDir.Data(),runId.Data(),led[i]));
+      c->SaveAs(Form("%s/singlePEfit_%s_led%d.png",plotsDir.Data(),runId.Data(),led[i]));
       //      c->SaveAs(Form("%s/singlePEfit_led%d.png",plotsDir.Data(),led[i]));
       pt->Clear();
     }

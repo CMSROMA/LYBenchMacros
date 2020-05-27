@@ -20,7 +20,7 @@ parser.set_defaults(longRun=False,fromHistos=False)
 args = parser.parse_args()
 
 #Very preliminary calibration to be updated (eg passed as parameter?)
-pe=16
+pe=16.7
 
 c=R.TCanvas("c","c",900,700)
 f=R.TFile(args.input)
@@ -33,6 +33,7 @@ if (not args.fromHistos):
     histos['spill']=R.TH1F("spill","spill",200,-0.5,199.5)
     if (h4.GetEntries()<=0):
         print("Empty input tree!")
+    h4.Project("spill","spill")
     h4.GetEntry(1)
     ts=h4.time_stamps[1]
     runTime=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ts))
@@ -51,18 +52,20 @@ if 'histos_' in runID:
     runID=runID.split('histos_')[1]
 
 out=R.TFile(args.output+"/SourceAnalysis_"+ runID +".root","RECREATE")
-outTS = open(args.output+"/SourceAnalysis_Summary.txt","a")       
 
 for ibin in range(1,maxSpill+1):
-    if (args.longRun and histos['spill'].GetBinContent(ibin) < 1000 ):
+    if (ibin<5):
+        print(histos['spill'].GetBinContent(ibin))
+    if (args.longRun and histos['spill'].GetBinContent(ibin+1) < 1000 ):
         continue
-    key="_spill%d"%(ibin-1)
+    print("Events in spill %d=%d"%(ibin,histos['spill'].GetBinContent(ibin+1)))
+    key="_spill%d"%(ibin)
     if (not args.fromHistos):
         histos['charge'+key]=R.TH1F("charge"+key,"charge"+key,1000,1000,101000)
         if (not args.longRun):
             h4.Project("charge"+key,"charge_tot[C0]")
         else:
-            h4.Project("charge"+key,"charge_tot[C0]","spill==%d"%ibin-1)
+            h4.Project("charge"+key,"charge_tot[C0]","spill==%d"%(ibin))
     else:
         histos['charge'+key]=f.Get('charge'+key)
         histos['tBench'+key]=f.Get('tBench'+key)
@@ -105,7 +108,7 @@ for ibin in range(1,maxSpill+1):
         fTot.SetParameter(9,15.)
         fTot.SetParLimits(9,5,40.)
         fTot.SetParameter(10,peak)
-        fTot.SetParLimits(10,0.9*peak,1.1*peak)
+        fTot.SetParLimits(10,0.85*peak,1.15*peak)
         fTot.SetParameter(11,0.05*peak)
         fTot.SetParLimits(11,0.02*peak,0.2*peak)
         #511 KeV backscatter peak
@@ -215,9 +218,11 @@ for ibin in range(1,maxSpill+1):
 
     pedaytxt = f2.Get("singlePE").GetMean()
     ledID=os.path.splitext(os.path.basename(args.led))[0]
-    txtstring = str(spillID) + "  " + str(ibin) + "  " + str(pe) + "  " + str(ledID) + "  " + str(pedaytxt) + "  " + str(fTot.GetParameter(10)) + "  " + str(fTot.GetParError(10)) + "  " + str(fTot.GetParameter(11)) + "  " + str(fTot.GetParError(11)) + "  " + str(fTot.GetParameter(4)) + "  " + str(fTot.GetParError(4)) + "  " + str(fTot.GetParameter(5)) + "  " + str(fTot.GetParError(5)) + "  "
-    outTS.write(txtstring)
-    outTS.close()
+    if (not args.longRun):
+        txtstring = str(spillID) + "  " + str(ibin) + "  " + str(pe) + "  " + str(ledID) + "  " + str(pedaytxt) + "  " + str(fTot.GetParameter(10)) + "  " + str(fTot.GetParError(10)) + "  " + str(fTot.GetParameter(11)) + "  " + str(fTot.GetParError(11)) + "  " + str(fTot.GetParameter(4)) + "  " + str(fTot.GetParError(4)) + "  " + str(fTot.GetParameter(5)) + "  " + str(fTot.GetParError(5)) + "  "
+        outTS = open(args.output+"/SourceAnalysis_Summary.txt","a")       
+        outTS.write(txtstring)
+        outTS.close()
 
     text=R.TLatex()
     text.SetTextSize(0.03)
@@ -242,14 +247,15 @@ for ibin in range(1,maxSpill+1):
         histos['tLab'+key].Write()
 
     if (args.longRun):
-        x.append(ibin-1)
+        x.append(ibin)
         x_err.append(0)
         ly.append(fTot.GetParameter(10))
         ly_err.append(fTot.GetParError(10))
         lyres.append(fTot.GetParameter(11)/fTot.GetParameter(10))
         lyres_err.append(fTot.GetParError(11)/fTot.GetParameter(10))
-        tb.append(histos['tBench'+key].GetMean())
-        tb_err.append(histos['tBench'+key].GetRMS())
+        if (args.fromHistos):
+            tb.append(histos['tBench'+key].GetMean())
+            tb_err.append(histos['tBench'+key].GetRMS())
 
     #linearity only if feasible
     if (peak<20000 and not args.longRun):
@@ -310,37 +316,38 @@ if (args.longRun):
     out.cd()
     lyVsSpill.Write("lyVsSpill_"+runID)
 
-    lyVsTBench=R.TGraphErrors(len(tb),tb,ly,tb_err,ly_err)
-    c.SetLogy(0)
-    lyVsTBench.Draw("APE")
-    R.gStyle.SetOptTitle(0)
-    R.gStyle.SetOptFit(1111)
-    lyVsTBench.SetMarkerStyle(20)
-    lyVsTBench.SetMarkerSize(1.1)
-    lyVsTBench.GetXaxis().SetTitle("Temperature")
-    lyVsTBench.GetYaxis().SetTitle("LY response (ADC)")
-    lyVsTBench.GetYaxis().SetRangeUser(ly[0]*0.85,ly[0]*1.15)
-#    lyVsTBench.Fit( "pol0" )
-    for ext in ['png','pdf']:
-        c.SaveAs(args.output+"/lyTBench_"+ runID +"."+ext)
-    out.cd()
-    lyVsTBench.Write("lyVsTBench_"+runID)
+    if (args.fromHistos):
+        lyVsTBench=R.TGraphErrors(len(tb),tb,ly,tb_err,ly_err)
+        c.SetLogy(0)
+        lyVsTBench.Draw("APE")
+        R.gStyle.SetOptTitle(0)
+        R.gStyle.SetOptFit(1111)
+        lyVsTBench.SetMarkerStyle(20)
+        lyVsTBench.SetMarkerSize(1.1)
+        lyVsTBench.GetXaxis().SetTitle("Temperature")
+        lyVsTBench.GetYaxis().SetTitle("LY response (ADC)")
+        lyVsTBench.GetYaxis().SetRangeUser(ly[0]*0.85,ly[0]*1.15)
+        #    lyVsTBench.Fit( "pol0" )
+        for ext in ['png','pdf']:
+            c.SaveAs(args.output+"/lyTBench_"+ runID +"."+ext)
+        out.cd()
+        lyVsTBench.Write("lyVsTBench_"+runID)
 
-    tbVsSpill=R.TGraphErrors(len(x),x,tb,x_err,tb_err)
-    c.SetLogy(0)
-    tbVsSpill.Draw("APEL")
-    R.gStyle.SetOptTitle(0)
-    R.gStyle.SetOptFit(1111)
-    tbVsSpill.SetMarkerStyle(20)
-    tbVsSpill.SetMarkerSize(1.1)
-    tbVsSpill.GetXaxis().SetTitle("#Spill")
-    tbVsSpill.GetYaxis().SetTitle("Temperature")
-    tbVsSpill.GetYaxis().SetRangeUser(15,30)
-#    tbVsSpill.Fit( "pol0" )
-    for ext in ['png','pdf']:
-        c.SaveAs(args.output+"/tbSpill_"+ runID +"."+ext)
-    out.cd()
-    tbVsSpill.Write("TBenchVsSpill_"+runID)
+        tbVsSpill=R.TGraphErrors(len(x),x,tb,x_err,tb_err)
+        c.SetLogy(0)
+        tbVsSpill.Draw("APEL")
+        R.gStyle.SetOptTitle(0)
+        R.gStyle.SetOptFit(1111)
+        tbVsSpill.SetMarkerStyle(20)
+        tbVsSpill.SetMarkerSize(1.1)
+        tbVsSpill.GetXaxis().SetTitle("#Spill")
+        tbVsSpill.GetYaxis().SetTitle("Temperature")
+        tbVsSpill.GetYaxis().SetRangeUser(15,30)
+        #    tbVsSpill.Fit( "pol0" )
+        for ext in ['png','pdf']:
+            c.SaveAs(args.output+"/tbSpill_"+ runID +"."+ext)
+        out.cd()
+        tbVsSpill.Write("TBenchVsSpill_"+runID)
 
     R.gStyle.SetOptStat(1111)
 
@@ -352,13 +359,14 @@ if (args.longRun):
         c.SaveAs(args.output+"/ly_"+ runID +"."+ext)
     histos['ly'].Write("ly_"+runID)
 
-    histos['tb']=R.TH1F('tb_'+runID,'tb_'+runID,300,15,30)
-    for val in tb:
-        histos['tb'].Fill(val)
-    histos['tb'].Draw()
-    for ext in ['png','pdf']:
-        c.SaveAs(args.output+"/tb_"+ runID +"."+ext)
-    histos['tb'].Write("TBench_"+runID)
+    if (args.fromHistos):
+        histos['tb']=R.TH1F('tb_'+runID,'tb_'+runID,300,15,30)
+        for val in tb:
+            histos['tb'].Fill(val)
+        histos['tb'].Draw()
+        for ext in ['png','pdf']:
+            c.SaveAs(args.output+"/tb_"+ runID +"."+ext)
+        histos['tb'].Write("TBench_"+runID)
 
 out.cd()
 histos['peused']=R.TH1F('peused','peused',60,10,25)
