@@ -55,6 +55,7 @@ sourceFits = {}
 histos = {}
 files = {}
 histos['ly']=R.TH1F('ly','ly',400,0.,2000.)
+histos['dt']=R.TH1F('dt','dt',200,30.,50.)
 histos['lyAll']=R.TH1F('lyAll','lyAll',400,0.,2000.)
 histos['lyNorm']=R.TH1F('lyNorm','lyNorm',400,0.,2000.)
 #histos['lyVsGain']=R.TH2F('lyVsGain','lyVsGain',200,0,20.,400,0.,2000.)
@@ -77,7 +78,7 @@ for r in refRuns:
         continue
     goodFits.append(r)
 
-x,ly,lyres,pe = array('d'),array('d'),array('d'),array('d')
+x,ly,lyres,pe,dt = array('d'),array('d'),array('d'),array('d'),array('d')
 #goodfits=0
 
 goodFits.sort()
@@ -98,8 +99,10 @@ for i,r in enumerate(goodFits):
     label=r.split('SourceAnalysis/SourceAnalysis_REF')[1].split('SL-')[1].replace('.root','')
     x.append(i+0.5)
     ly.append(sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10))
+    dt.append(sourceFits[r]['filteredWaveform_spill0'].GetFunction("f2").GetParameter(1))
     pe.append(sourceFits[r]['peday'].GetMean())
     histos['ly'].Fill(sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10)/16.)
+    histos['dt'].Fill(dt[i])
     histos['lyNorm'].Fill(sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10)/sourceFits[r]['peday'].GetMean())
 #    histos['lyVsGain'].Fill(sourceFits[r]['peday'].GetMean(),sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10)/16.)
     histos['lyFrame'].GetXaxis().SetBinLabel(i+1,label)

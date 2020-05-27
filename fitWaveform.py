@@ -103,7 +103,7 @@ R.gStyle.SetOptFit(0)
 f2.SetNpx(10000)
 wf.Draw("APE")
 #f2.SetLineWidth(5)
-wf.GetXaxis().SetRangeUser(-5,300)
+wf.GetXaxis().SetRangeUser(-5,230)
 wf.Fit(f2,"RB+","",15,200)
 xG_shift = np.empty(hh1.GetNbinsX()-1, dtype="float64")
 for ibin in range(1,hh1.GetNbinsX()):
