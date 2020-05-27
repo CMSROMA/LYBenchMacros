@@ -21,13 +21,13 @@ for prod in producers:
     histos['ly_'+prod]=R.TH1F('ly_'+prod,'ly_'+prod,400,0.,2000.)
     histos['lyAbs_'+prod]=R.TH1F('lyAbs_'+prod,'lyAbs_'+prod,400,0.,2000.)
     histos['lyAbsAvgQECorr_'+prod]=R.TH1F('lyAbsAvgQECorr_'+prod,'lyAbsAvgQECorr_'+prod,400,0.,10000.)
-    histos['lyAbsOverDt_'+prod]=R.TH1F('lyAbsOverDt_'+prod,'lyAbsOverDt_'+prod,400,0.,40.)
+    histos['lyAbsOverDt_'+prod]=R.TH1F('lyAbsOverDt_'+prod,'lyAbsOverDt_'+prod,400,0.,400.)
     histos['dt_'+prod]=R.TH1F('dt_'+prod,'dt_'+prod,100,20.,50.)
     histos['lyNorm_'+prod]=R.TH1F('lyNorm_'+prod,'lyNorm_'+prod,400,0.5,1.5)
     for geo in geoms:
         histos['ly_'+prod+'_'+geo]=R.TH1F('ly_'+prod+'_'+geo,'ly_'+prod+'_'+geo,400,0.,2000.)
         histos['lyAbs_'+prod+'_'+geo]=R.TH1F('lyAbs_'+prod+'_'+geo,'lyAbs_'+prod+'_'+geo,400,0.,2000.)
-        histos['lyAbsOverDt_'+prod+'_'+geo]=R.TH1F('lyAbsOverDt_'+prod+'_'+geo,'lyAbsOverDt_'+prod+'_'+geo,400,0.,40.)
+        histos['lyAbsOverDt_'+prod+'_'+geo]=R.TH1F('lyAbsOverDt_'+prod+'_'+geo,'lyAbsOverDt_'+prod+'_'+geo,400,0.,400.)
         histos['dt_'+prod+'_'+geo]=R.TH1F('dt_'+prod+'_'+geo,'dt_'+prod+'_'+geo,100,20.,50.)
         histos['lyNorm_'+prod+'_'+geo]=R.TH1F('lyNorm_'+prod+'_'+geo,'lyNorm_'+prod+'_'+geo,400,0.5,1.5)
         data[prod+'_'+geo] = []
@@ -72,7 +72,7 @@ R.gStyle.SetOptTitle(0)
 text=R.TLatex()
 text.SetTextSize(0.04)
 
-leg=R.TLegend(0.5,0.6,0.92,0.88)
+leg=R.TLegend(0.45,0.6,0.92,0.88)
 leg.SetBorderSize(0)
 leg.SetFillColorAlpha(0,0)
 leg.SetTextSize(0.03)
@@ -190,11 +190,11 @@ histos[mainHisto].GetXaxis().SetRangeUser(35,50)
 leg.Draw()
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT Bench")
 
-arr0=R.TArrow(0.26,4,0.26,0,0.03,"|>")
+arr0=R.TArrow(45,4,45,0,0.03,"|>")
 arr0.SetLineWidth(3)
 arr0.SetArrowSize(0.03)
 arr0.SetFillColor(1)
-arr0.Draw()
+#arr0.Draw()
 
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/dt_ProdDifferentColors"+ext)
@@ -231,7 +231,7 @@ arr0=R.TArrow(0.26,4,0.26,0,0.03,"|>")
 arr0.SetLineWidth(3)
 arr0.SetArrowSize(0.03)
 arr0.SetFillColor(1)
-arr0.Draw()
+#arr0.Draw()
 
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/i0_ProdDifferentColors"+ext)
@@ -269,7 +269,7 @@ arr1=R.TArrow(0.5,4,0.5,0,0.03,"|>")
 arr1.SetLineWidth(3)
 arr1.SetArrowSize(0.03)
 arr1.SetFillColor(1)
-arr1.Draw()
+#arr1.Draw()
 
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/i1_ProdDifferentColors"+ext)
@@ -306,7 +306,7 @@ arr2=R.TArrow(0.992,4,0.992,0,0.03,"|>")
 arr2.SetLineWidth(3)
 arr2.SetArrowSize(0.03)
 arr2.SetFillColor(1)
-arr2.Draw()
+#arr2.Draw()
 
 for ext in ['.pdf','.png','.C']:
     c1.SaveAs("LYAnalysis/i2_ProdDifferentColors"+ext)
@@ -384,7 +384,7 @@ for iprod,prod in enumerate(producers):
     histos['lyAbsAvgQECorr_'+prod].SetLineStyle(iprod/4+1)
     histos['lyAbsAvgQECorr_'+prod].SetFillStyle(3001)
     histos['lyAbsAvgQECorr_'+prod].SetFillColorAlpha(R.kBlack+iprod,0.45)
-    leg.AddEntry(histos['lyAbsAvgQECorr_'+prod],"%s - Mean:%.2E, RMS:%.2E"%(prod,histos['lyAbsAvgQECorr_'+prod].GetMean(),histos['lyAbsAvgQECorr_'+prod].GetRMS()),'F')
+    leg.AddEntry(histos['lyAbsAvgQECorr_'+prod],"%s Mean:%.1E,RMS:%.1E"%(prod,histos['lyAbsAvgQECorr_'+prod].GetMean(),histos['lyAbsAvgQECorr_'+prod].GetRMS()),'F')
 
     if (histos['lyAbsAvgQECorr_'+prod].GetMaximum()>maxH):
         maxH=histos['lyAbsAvgQECorr_'+prod].GetMaximum()
@@ -408,7 +408,7 @@ arr=R.TArrow(4000,4,4000,0,0.03,"|>")
 arr.SetLineWidth(3)
 arr.SetArrowSize(0.03)
 arr.SetFillColor(1)
-arr.Draw()
+#arr.Draw()
 
 R.gPad.RedrawAxis()
 for ext in ['.pdf','.png','.C']:
@@ -418,9 +418,9 @@ maxH=0
 mainHisto=''
 leg.Clear()
 for iprod,prod in enumerate(producers): 
-    histos['lyAbsOverDt_'+prod].Rebin(4)
+    histos['lyAbsOverDt_'+prod].Rebin(2)
     histos['lyAbsOverDt_'+prod].SetStats(0)
-    histos['lyAbsOverDt_'+prod].GetXaxis().SetTitle("LO/Decay Time [#pe/ns]")
+    histos['lyAbsOverDt_'+prod].GetXaxis().SetTitle("LO/Decay Time [photons/MeV/ns]")
     histos['lyAbsOverDt_'+prod].SetLineColor(R.kBlack+iprod)
     histos['lyAbsOverDt_'+prod].SetLineWidth(3)
     histos['lyAbsOverDt_'+prod].SetLineStyle(iprod/4+1)
@@ -438,8 +438,14 @@ for iprod,prod in enumerate(producers):
         histos['lyAbsOverDt_'+prod].Draw("SAME")
 
 histos[mainHisto].SetMaximum(maxH*1.7)
-histos[mainHisto].GetXaxis().SetRangeUser(10.,20.)
+histos[mainHisto].GetXaxis().SetRangeUser(80.,180.)
 leg.Draw()
+
+arr4=R.TArrow(100,4,100,0,0.03,"|>")
+arr4.SetLineWidth(3)
+arr4.SetArrowSize(0.03)
+arr4.SetFillColor(1)
+#arr4.Draw()
 
 text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT Bench")
 for ext in ['.pdf','.png','.C']:

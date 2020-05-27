@@ -189,7 +189,7 @@ text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
 for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/lyNormMeanCorr_ProdDifferentColors"+ext)
 
-frame2=R.TH2F("frame2","frame2",20,0.5,1.7,20,0.5,1.7)
+frame2=R.TH2F("frame2","frame2",20,0.5,1.7,20,0.9,1.2)
 frame2.SetStats(0)
 frame2.GetXaxis().SetTitle("Relative Decay Time/LO PMT")
 frame2.GetYaxis().SetTitle("#sigma_{t} @ 511 KeV/120 ps")
@@ -217,12 +217,12 @@ text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench")
 for ext in ['.pdf','.png']:
     c1.SaveAs("LYAnalysis/ctrVslyAbsOverDt_ProdDifferentColors"+ext)
 
-frame3=R.TH2F("frame3","frame3",20,0.5,1.7,20,0.5,1.7)
+frame3=R.TH2F("frame3","frame3",20,0.7,1.2,20,0.7,1.5)
 frame3.SetStats(0)
 frame3.GetXaxis().SetTitle("Relative Decay Time/LO TOFPET (NoGeoCorr)")
 frame3.GetYaxis().SetTitle("#sigma_{t} @ 511 KeV/120 ps")
 
-f1=R.TF1("f1","2*x-1",0.8,1.2)
+f1=R.TF1("f1","2*x-1",0.8,1.1)
 f1.SetLineColor(R.kRed+3)
 f1.SetLineWidth(4)
 
@@ -279,7 +279,7 @@ for igeo,geo in enumerate(geoms):
 
     #leg.Draw()
     text.DrawLatexNDC(0.12,0.91,"CMS Rome - PMT & TOFPET Bench - "+geo)
-    f.Draw("SAME")        
+#    f1.Draw("SAME")        
     for ext in ['.pdf','.png']:
         c1.SaveAs("LYAnalysis/ctrVslyAbsTofOverDt_ProdDifferentColors_"+geo+ext)
 
