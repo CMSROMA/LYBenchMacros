@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PARSED_OPTIONS=$(getopt -n "$0"  -o i:ls --long "input:long,fromHistos,simul"  -- "$@")
+PARSED_OPTIONS=$(getopt -n "$0"  -o i:lsv --long "input:long,fromHistos,simul,view"  -- "$@")
 #Bad arguments, something has gone wrong with the getopt command.
 if [ $? -ne 0 ];
 then
@@ -14,6 +14,7 @@ inputFile=""
 long=0
 simul=0
 fromHistos=0
+view=0
 
 while true;
 do
@@ -33,6 +34,10 @@ do
     -s|--simul)
       simul=1
       echo "Scan simultaneous fit analysis"
+      shift;; 
+    -v|--view)
+      view=1
+      echo "View results at the end"
       shift;; 
     --fromHistos)
       fromHistos=1
@@ -80,4 +85,10 @@ else
 	fi
 	root -l -b -q SinglePEAnalysis_longRun.C+\(\"/data/cmsdaq/led/ntuples/histos_$inputFile.root\",0,1\)
     fi
+fi
+
+if [ $view -eq 1 ]; then
+    for file in SinglePEAnalysis/*${inputFile}*.png; do
+	display $file > /dev/null 2>&1 & 
+    done
 fi

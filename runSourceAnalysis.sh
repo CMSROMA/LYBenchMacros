@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PARSED_OPTIONS=$(getopt -n "$0"  -o i:p:l --long "input:led:long,fromHistos"  -- "$@")
+PARSED_OPTIONS=$(getopt -n "$0"  -o i:p:lv --long "input:led:long,view,fromHistos"  -- "$@")
 #Bad arguments, something has gone wrong with the getopt command.
 if [ $? -ne 0 ];
 then
@@ -14,6 +14,7 @@ inputFile=""
 ledFile=""
 long=0
 fromHistos=0
+view=0
 
 while true;
 do
@@ -37,6 +38,11 @@ do
     -l|--long)
       long=1
       echo "LongRun analysis"
+      shift;;
+
+    -v|--view)
+      view=1
+      echo "View analysis results"
       shift;;
 
     --fromHistos)
@@ -87,3 +93,9 @@ else
 fi
 
 python fitWaveform.py --input=/data/cmsdaq/source/ntuples/h4Reco_${inputFile}.root --output=SourceAnalysis
+
+if [ $view -eq 1 ]; then
+    for file in SourceAnalysis/chargeFit*${inputFile}*.png SourceAnalysis/fitWaveform*${inputFile}*.png; do
+	display $file > /dev/null 2>&1 & 
+    done
+fi
