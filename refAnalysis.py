@@ -49,6 +49,34 @@ refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20190913-3.roo
 refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20190918-2.root")
 refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20190918-3.root")
 refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20190919-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20190912-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20190912-2.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20190912-3.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20191022-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20191105-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20191113-2.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20191115-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20191118-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200203-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200520-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200520-2.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200520-3.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200520-4.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200527-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200527-2.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200527-3.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-20200527-4.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191118-2.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191119-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191119-2.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191120-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191120-3.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191121-1.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191121-3.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191122-2.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191122-3.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191122-4.root")
+refRuns.append("SourceAnalysis/SourceAnalysis_REF-WS3-NW-NC-P2-SL-H2-20191206-1.root")
 
 
 sourceFits = {}
@@ -67,18 +95,25 @@ for r in refRuns:
     objs=Map(files[r])
     sourceFits[r]=objs
 
-    if not 'charge_spill0' in objs.keys():
+    if ((not 'charge_spill0' in objs.keys()) and (not 'charge_spill1' in objs.keys())):
         continue
-    histos['lyAll'].Fill(sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10)/16.)
+
+    cH='charge_spill0'
+    if not cH in objs.keys():
+        cH='charge_spill1'
+
+    histos['lyAll'].Fill(sourceFits[r][cH].GetFunction('fTot').GetParameter(10)/16.)
     if not 'peused' in objs.keys():
         continue
     if not 'peday' in objs.keys():
         continue
     if sourceFits[r]['peday'].GetMean()>21:
         continue
+
+    print(r)
     goodFits.append(r)
 
-x,ly,lyres,pe,dt = array('d'),array('d'),array('d'),array('d'),array('d')
+x,ly,lyres,pe,dt,unixtime = array('d'),array('d'),array('d'),array('d'),array('d'),array('d')
 #goodfits=0
 
 goodFits.sort()
@@ -98,20 +133,24 @@ histos['lypeFrame'].GetYaxis().SetTitle("#pe")
 for i,r in enumerate(goodFits):
     label=r.split('SourceAnalysis/SourceAnalysis_REF')[1].split('SL-')[1].replace('.root','')
     x.append(i+0.5)
-    ly.append(sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10))
+    cH='charge_spill0'
+    if not cH in sourceFits[r].keys():
+        cH='charge_spill1'
+    unixtime.append(files[r].GetCreationDate().Convert(R.kTRUE))
+    ly.append(sourceFits[r][cH].GetFunction('fTot').GetParameter(10))
     dt.append(sourceFits[r]['filteredWaveform_spill0'].GetFunction("f2").GetParameter(1))
     pe.append(sourceFits[r]['peday'].GetMean())
-    histos['ly'].Fill(sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10)/16.)
+    histos['ly'].Fill(sourceFits[r][cH].GetFunction('fTot').GetParameter(10)/16.)
     histos['dt'].Fill(dt[i])
-    histos['lyNorm'].Fill(sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10)/sourceFits[r]['peday'].GetMean())
-#    histos['lyVsGain'].Fill(sourceFits[r]['peday'].GetMean(),sourceFits[r]['charge_spill0'].GetFunction('fTot').GetParameter(10)/16.)
+    histos['lyNorm'].Fill(sourceFits[r][cH].GetFunction('fTot').GetParameter(10)/sourceFits[r]['peday'].GetMean())
+#    histos['lyVsGain'].Fill(sourceFits[r]['peday'].GetMean(),sourceFits[r][cH].GetFunction('fTot').GetParameter(10)/16.)
     histos['lyFrame'].GetXaxis().SetBinLabel(i+1,label)
     histos['peFrame'].GetXaxis().SetBinLabel(i+1,label)
     histos['lypeFrame'].GetXaxis().SetBinLabel(i+1,label)
 
-histos['lyGraph']=R.TGraph(len(x),x,ly)
+histos['lyGraph']=R.TGraph(len(x),unixtime,ly)
 histos['lyGraph'].SetName("lyGraph")
-histos['peGraph']=R.TGraph(len(x),x,pe)
+histos['peGraph']=R.TGraph(len(x),unixtime,pe)
 histos['peGraph'].SetName("peGraph")
 histos['lypeGraph']=R.TGraph(len(x))
 histos['lypeGraph'].SetName("lypeGraph")
@@ -120,8 +159,7 @@ histos['lyVsGain'].SetName("lyVsGain")
 for i in range(0,len(pe)):
     histos['lyVsGain'].SetPoint(i,pe[i],ly[i])
     histos['lyVsGain'].SetPointError(i,pe[i]*0.01,ly[i]*0.01)
-    histos['lypeGraph'].SetPoint(i,x[i],ly[i]/pe[i])
-
+    histos['lypeGraph'].SetPoint(i,unixtime[i],ly[i]/pe[i])
 
 c1=R.TCanvas("c1","c1",800,600)
 R.gStyle.SetOptTitle(0)
@@ -130,11 +168,11 @@ text=R.TLatex()
 text.SetTextSize(0.04)
 
 for h in ['ly','pe', 'lype']:
-    histos[h+'Frame'].Draw()
+#    histos[h+'Frame'].Draw()
     histos[h+'Graph'].SetMarkerColor(R.kBlack)
     histos[h+'Graph'].SetMarkerStyle(20)
     histos[h+'Graph'].SetMarkerSize(1.2)
-    histos[h+'Graph'].Draw("PSAME")
+    histos[h+'Graph'].Draw("AP")
     text.DrawLatexNDC(0.12,0.91,"PMT Bench - Ref crystal vs RunID")
     c1.SaveAs("refAnalysis/"+h+"Graph.pdf")
 
@@ -151,13 +189,16 @@ text.SetTextSize(0.04)
 text.DrawLatexNDC(0.12,0.91,"PMT Bench - Ref crystal LY")
 c1.SaveAs("refAnalysis/refLY.pdf")
 
-R.gStyle.SetOptFit(0)
+R.gStyle.SetOptFit(11111)
+
+fS=R.TF1('fS','800*x-2000',0,30)
 histos['lyVsGain'].SetMarkerStyle(20)
 histos['lyVsGain'].SetMarkerSize(1.2)
 histos['lyVsGain'].Draw("AP")
+#histos['lyVsGain'].Fit(fS)
 histos['lyVsGain'].GetXaxis().SetTitle("Single PE [ADC]")
 histos['lyVsGain'].GetYaxis().SetTitle("511 KeV Peak [ADC]")
-#histos['lyVsGain'].Fit("pol1")
+#fS.Draw("SAME")
 c1.SaveAs("refAnalysis/LYvsGain.pdf")
 
 out=R.TFile("refAnalysis/refAnalysis.root","RECREATE")

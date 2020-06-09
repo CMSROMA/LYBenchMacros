@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PARSED_OPTIONS=$(getopt -n "$0"  -o i:p:lv --long "input:led:long,view,fromHistos"  -- "$@")
+PARSED_OPTIONS=$(getopt -n "$0"  -o i:p:lvw --long "input:led:long,view,web,fromHistos"  -- "$@")
 #Bad arguments, something has gone wrong with the getopt command.
 if [ $? -ne 0 ];
 then
@@ -15,6 +15,7 @@ ledFile=""
 long=0
 fromHistos=0
 view=0
+web=0
 
 while true;
 do
@@ -39,12 +40,14 @@ do
       long=1
       echo "LongRun analysis"
       shift;;
-
     -v|--view)
       view=1
       echo "View analysis results"
       shift;;
-
+    -w|--web)
+      web=1
+      echo "Transfer to web server"
+      shift;; 
     --fromHistos)
       fromHistos=1
       echo "Running from histograms"
@@ -97,5 +100,16 @@ python fitWaveform.py --input=/data/cmsdaq/source/ntuples/h4Reco_${inputFile}.ro
 if [ $view -eq 1 ]; then
     for file in SourceAnalysis/chargeFit*${inputFile}*.png SourceAnalysis/fitWaveform*${inputFile}*.png; do
 	display $file > /dev/null 2>&1 & 
+    done
+fi
+
+if [ $web -eq 1 ]; then
+    mkdir -p /data/cmsdaq/www/process/${inputFile}
+    cp -v /data/cmsdaq/www/process/index.php /data/cmsdaq/www/process/${inputFile}/index.php
+    for file in SourceAnalysis/chargeFit*${inputFile}*.png SourceAnalysis/fitWaveform*${inputFile}*.png; do
+	cp -v $file /data/cmsdaq/www/process/${inputFile}/
+    done
+    for file in SourceAnalysis/chargeFit*${inputFile}*.pdf SourceAnalysis/fitWaveform*${inputFile}*.pdf; do
+	cp -v $file /data/cmsdaq/www/process/${inputFile}/
     done
 fi

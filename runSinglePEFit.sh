@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PARSED_OPTIONS=$(getopt -n "$0"  -o i:lsv --long "input:long,fromHistos,simul,view"  -- "$@")
+PARSED_OPTIONS=$(getopt -n "$0"  -o i:lsvw --long "input:long,fromHistos,simul,view,web"  -- "$@")
 #Bad arguments, something has gone wrong with the getopt command.
 if [ $? -ne 0 ];
 then
@@ -15,6 +15,7 @@ long=0
 simul=0
 fromHistos=0
 view=0
+web=0
 
 while true;
 do
@@ -38,6 +39,10 @@ do
     -v|--view)
       view=1
       echo "View results at the end"
+      shift;; 
+    -w|--web)
+      web=1
+      echo "Transfer to web server"
       shift;; 
     --fromHistos)
       fromHistos=1
@@ -90,5 +95,16 @@ fi
 if [ $view -eq 1 ]; then
     for file in SinglePEAnalysis/*${inputFile}*.png; do
 	display $file > /dev/null 2>&1 & 
+    done
+fi
+
+if [ $web -eq 1 ]; then
+    mkdir -p /data/cmsdaq/www/process/${inputFile}
+    cp -v /data/cmsdaq/www/process/index.php /data/cmsdaq/www/process/${inputFile}/index.php
+    for file in SinglePEAnalysis/*${inputFile}*.png; do
+	cp -v $file /data/cmsdaq/www/process/${inputFile}/
+    done
+    for file in SinglePEAnalysis/*${inputFile}*.pdf; do
+	cp -v $file /data/cmsdaq/www/process/${inputFile}/
     done
 fi
