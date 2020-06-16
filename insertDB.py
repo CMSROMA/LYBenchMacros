@@ -28,24 +28,12 @@ if (int(crys.split('BAR0')[1]) != xtalid):
      print('ERROR. Check that ID %s matches crystal number %d'%(crys,xtalid))
      exit(-1)
 
-import json
-db=json.load(open(args.db))
+import measDB
+f=measDB.MeasDB(args.db)
+f.insertMeas(crys,prod,geo,runs,refRuns,ledRuns,tag)
 
-print('=========> Crystal %s '%crys)
-if crys in db.keys():
-     if (tag in [  r['tag'] for r in db[crys]['runs'] ]):
-          print('ERROR. Tag %s already present'%tag)
-     else:
-          db[crys]['runs'].append({'tag':tag,'runs':runs, 'refRuns':refRuns,'ledRuns':ledRuns})
-          print('Tag %s for crystal %s inserted correctly. Total runs for this xtal %d'%(tag,crys,len(db[crys]['runs'])))
-else:
-     db[crys]={ 'type':'xtal','producer':prod,'geometry':geo,'id':xtalid,'runs':[ {'tag':tag,'runs':runs, 'refRuns':refRuns,'ledRuns':ledRuns} ] } 
-     print('Crystal %s inserted correctly'%crys)
+print('Runs for this xtal %s'%str(f.getMeas(crys)))
+print('------ Number of crystals in DB %d ------'%len(f.getXtals()))
 
-print('Runs for this xtal %s'%str([ '%s:%s,'%(str(r['tag']),str(r['runs'])) for r in db[crys]['runs']]))
-print('------ Number of crystals in DB %d ------'%len(db.keys()))
-
-with open(args.db, 'w') as file:
-     file.write(json.dumps(db))
-
+f.save()
 

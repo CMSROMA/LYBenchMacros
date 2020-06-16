@@ -19,12 +19,15 @@ parser.set_defaults(longRun=False,fromHistos=False)
 
 args = parser.parse_args()
 
-#Very preliminary calibration to be updated (eg passed as parameter?)
-pe=16.7
+
+
 
 c=R.TCanvas("c","c",900,700)
 f=R.TFile(args.input)
 f2=R.TFile(args.led)
+
+#pe passed from led file
+pe=f2.Get("singlePE").GetMean()
 
 histos = {}
 
