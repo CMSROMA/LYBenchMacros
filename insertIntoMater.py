@@ -2,6 +2,10 @@ import materMTD
 import lyDB
 import os        
 
+import logging
+logging.basicConfig(format='%(asctime)s  %(filename)s  %(levelname)s: %(message)s',
+                    level=logging.INFO)
+
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -20,7 +24,7 @@ if db.connected():
         lyRaw=row['ly']/0.511 # [ADC/MeV]
         lyAbs=row['ly']/row['pe']/0.511 # [pe/MeV]
         lyNorm=row['ly']/row['ref'] # normalised to REF
-        print(xtalID,measTime,tag,lyNorm,lyAbs,lyRaw,dt)
+        logging(xtalID,measTime,tag,lyNorm,lyAbs,lyRaw,dt)
 #        try:   
 #            db.newActivity(xtalID, 'LY evaluation',start=measTime,notes=tag)
 #            db.newLY(xtalID,lyRaw,lyAbs,lyNorm,dt)

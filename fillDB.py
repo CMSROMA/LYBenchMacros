@@ -41,7 +41,7 @@ if (args.end == None):
 else:
     end=datetime.datetime.strptime(args.end,'%Y-%m-%d')
 
-print('Looking for runs from %s to %s'%(start.date(),end.date()))
+logging.info('Looking for runs from %s to %s'%(start.date(),end.date()))
 
 from collections import defaultdict
 ledRuns=defaultdict(list)
@@ -70,11 +70,11 @@ for r in runs:
     if(r['fields']['Type']=='SOURCE' and not r['fields']['TAG']=='REF_DAILY'):
         xtalID=next((x['fields']['ID'] for x in xtals if x['id'] == (r['fields']['Crystal'])[0]), None)
         if (xtalID is None):
-            print('ERROR: Xtal not found in Crystals table')
+            logging.error('Xtal not found in Crystals table')
             continue
 
         if (xtalID == 'REF'):
-            print('WARNING: Skip REF measurement %s not tagged as REF_DAILY'%r['fields']['RunID'])
+            logging.warning('Skip REF measurement %s not tagged as REF_DAILY'%r['fields']['RunID'])
             continue
 
         if (not tR.date() in measurements[xtalID].keys()):
@@ -88,7 +88,7 @@ for xt,runs in measurements.items():
         runs=[ r['id'] for r in rr ]
         xtalID=int((xt.split('BAR'))[1])
         tag=rr[0]['tag']
-        print(xt,tag,prod,geo,xtalID,runs,refRuns[day],ledRuns[day])
+        logging.info(xt,tag,prod,geo,xtalID,runs,refRuns[day],ledRuns[day])
         f.insertMeas(xt,prod,geo,xtalID,runs,refRuns[day],ledRuns[day],tag)
 
 f.save()

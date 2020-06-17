@@ -40,7 +40,73 @@ class MaterMtd:
         record = cursor.fetchall()
         if len(record) == 1:
             self._user = record[0][0]
-        
+
+    def activityDone(self, idPart, actDef, start, notes = None, idoperator = None):
+        ret = -1
+        sql = "SELECT ID FROM ACTIVITY WHERE IDPART = %s AND IDACTIVITY = %s AND START = %s "
+        ptuple = (idPart, actDef, start)
+        t = list(ptuple)
+        if notes != None:
+            sql += "AND NOTES = %s "
+            t.append(notes)
+        if idoperator != None:
+            sql += "AND IDOPERATOR = %s"
+            t.append(idoperator)
+        ptuple = tuple(t)
+        cursor = self._cnx.cursor(buffered=True)
+        cursor.execute(sql, ptuple)
+        record = cursor.fetchall()
+        if len(record) == 1:
+            ret = record[0][0]
+        return ret
+
+    def charExists(self, idActivity, charDef):
+        value = None
+        sql = "SELECT ID, TABLE_NAME FROM CHARACTERISTIC_DEFINITION WHERE SHORTNAME = %s"
+        cursor = self._cnx.cursor(buffered=True)
+        cursor.execute(sql, (charDef,))
+        record = cursor.fetchall()
+        if len(record) == 1:
+            if record[0][0] > 0:
+                idChar = record[0][0]
+                tblName = record[0][1]
+                sql = "SELECT * FROM " + tblName + " WHERE IDACTIVITY = %s AND IDDEFINITION = %s"
+                cursor.execute(sql, (idActivity, idChar,))
+                rchar = cursor.fetchall()
+                if len(rchar) > 0:
+                    value = rchar[0][2]
+        return value
+
+    def chars(self, part, charName = None):
+        ret = []
+        sql = "SELECT DISTINCT TABLE_NAME FROM CHARACTERISTIC_DEFINITION WHERE IDPARTDEFINITION = "
+        sql += "(SELECT IDDEFINITION FROM PART WHERE ID = %s)"
+        ptuple = (part,)
+        if charName != None:
+            sql += " AND SHORTNAME = %s"
+            l = list(ptuple)
+            l.append(charName)
+            ptuple = tuple(l)
+        cursor = self._cnx.cursor(buffered=True)
+        cursor.execute(sql, ptuple)
+        record = cursor.fetchall()
+        for r in record:
+            tblName = r[0]
+            sql = "SELECT CD.SHORTNAME, AD.SHORTDESCRIPTION, A.START, U.USERNAME, O.OUTCOME, "
+            sql += "A.NOTES, T.*, CD.UNIT FROM " + tblName + " T JOIN ACTIVITY A ON "
+            sql += "A.ID = T.IDACTIVITY JOIN ACTIVITY_DEFINITION AD ON AD.ID = A.IDACTIVITY JOIN "
+            sql += "CHARACTERISTIC_DEFINITION CD ON CD.ID = T.IDDEFINITION JOIN "
+            sql += "MATERUSERS.USER U ON U.ID = A.IDOPERATOR JOIN POSSIBLE_OUTCOMES O ON O.ID = A.IDOUTCOME "
+            ptuple = ()
+            if charName != None:
+                sql += "WHERE CD.SHORTNAME = %s "
+                ptuple = (charName,)
+            sql += "ORDER BY START DESC"
+            cursor.execute(sql, ptuple)
+            rValue = cursor.fetchall()
+            ret.append(rValue)
+        return ret
+    
     def newActivity(self, part, activity, start = None, stop = None, notes = None):
         if self._user < 0:
             print('User not defined...please declare it first...')
@@ -64,16 +130,17 @@ class MaterMtd:
         if notes == None:
             notes = ''
         idoperator = self._user
-        sql = 'INSERT INTO ACTIVITY (IDPART, IDACTIVITY, START, STOP, IDOUTCOME, '
-        sql += 'NOTES, IDOPERATOR) VALUES (%s, %s, %s, %s, %s, %s, %s)'
-        try:
-            cursor = self._cnx.cursor()
-            cursor.execute(sql, (part, actDef, start, stop, 1, notes, idoperator,))
-            self._cnx.commit()
-            cursor.close()
-        except mysql.connector.Error as error:
-            print("Failed to insert record into ACTIVITY {}".format(error))
-            print(sql)
+        if self.activityDone(part, actDef, start, notes, idoperator) == False:
+            sql = 'INSERT INTO ACTIVITY (IDPART, IDACTIVITY, START, STOP, IDOUTCOME, '
+            sql += 'NOTES, IDOPERATOR) VALUES (%s, %s, %s, %s, %s, %s, %s)'
+            try:
+                cursor = self._cnx.cursor()
+                cursor.execute(sql, (part, actDef, start, stop, 1, notes, idoperator,))
+                self._cnx.commit()
+                cursor.close()
+            except mysql.connector.Error as error:
+                print("Failed to insert record into ACTIVITY {}".format(error))
+                print(sql)
 
     def insertChar(self, part, charName, charValue):
         # only single valued chars support by now
