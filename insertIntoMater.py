@@ -10,6 +10,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--csv',dest='csv')
+parser.add_argument('--dummy',dest='dummy')
 args = parser.parse_args()
 
 ly=lyDB.LYDB(args.csv)
@@ -24,10 +25,10 @@ if db.connected():
         lyRaw=row['ly']/0.511 # [ADC/MeV]
         lyAbs=row['ly']/row['pe']/0.511 # [pe/MeV]
         lyNorm=row['ly']/row['ref'] # normalised to REF
-        logging(xtalID,measTime,tag,lyNorm,lyAbs,lyRaw,dt)
-#        try:   
-#            db.newActivity(xtalID, 'LY evaluation',start=measTime,notes=tag)
-#            db.newLY(xtalID,lyRaw,lyAbs,lyNorm,dt)
-#        except Exception as e:
-#            print('Exception while writing to DB:'+str(e))
+        try:
+            logging.info(str(xtalID)+' '+str(measTime)+' '+str(tag)+' '+str(lyNorm)+' '+str(lyAbs)+' '+str(lyRaw)+' '+str(dt))
+            if (args.dummy==None):   
+                db.newLY(xtalID,start=measTime,notes=tag,lyRaw=lyRaw,lyAbs=lyAbs,lyNorm=lyNorm,decayTime=dt)
+        except Exception as e:
+            logging.error('Exception while writing to DB:'+str(e))
 
