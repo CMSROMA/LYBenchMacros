@@ -44,7 +44,6 @@ class MaterMtd:
 
     def startTransaction(self):
         logging.info('---- Starting a transaction')
-#        while(self._cnx.in_transaction):
         self._cnx.start_transaction()
         self._cursor = self._cnx.cursor(buffered=True)
 
@@ -145,23 +144,27 @@ class MaterMtd:
     def newLY(self, part, start = None, stop = None, notes = None, lyRaw = None,
               lyAbs = None, lyNorm = None, decayTime = None):
         self.startTransaction()
-        try:
+
+        actDef = self.__activityDefinition('LY evaluation', part = part)
+        success = False
+        if self.activityDone(part, actDef, start, notes = None):
+            success = True
+        else:
             success = self.__newActivity(part, 'LY evaluation', start, stop, notes)
-            s1 = s2 = s3 = s4 = False
-            if success:
-                if lyRaw != None:
-                    s1 = self.__insertChar(part, 'lyRaw', lyRaw)
-                if lyAbs != None:
-                    s2 = self.__insertChar(part, 'lyAbs', lyAbs)
-                if lyNorm != None:
-                    s3 = self.__insertChar(part, 'lyNorm', lyNorm)
-                if decayTime != None:
-                    s4 = self.__insertChar(part, 'decayTime', decayTime)
-            if success and s1 and s2 and s3 and s4:
-                self.commit()
-            else:
-                self.rollback()
-        except:
+        s1 = s2 = s3 = s4 = False
+        if success:
+            if lyRaw != None:
+                s1 = self.__insertChar(part, 'lyRaw', lyRaw)
+            if lyAbs != None:
+                s2 = self.__insertChar(part, 'lyAbs', lyAbs)
+            if lyNorm != None:
+                s3 = self.__insertChar(part, 'lyNorm', lyNorm)
+            if decayTime != None:
+                s4 = self.__insertChar(part, 'decayTime', decayTime)
+        if success and s1 and s2 and s3 and s4:
+            self.commit()
+        else:
+            logging.error('LY insertion failed for part {}'.format(part))
             self.rollback()
 
     def newCrystalRegistration(self, partid, producer, reflector, wrapping, x, y, z):
@@ -169,42 +172,62 @@ class MaterMtd:
         idWrapping = {'None':1, 'Al':2, 'Tyvek':3}
         if reflector in idReflector and wrapping in idWrapping:
             self.startTransaction()
-            try:
-                success = self.__insertPart(partid, 'Crystal', producer)
-                if success:
-                    s1 = self.__newActivity(partid, 'Crystal registration')
-                    if s1:
-                        s2 = self.__insertChar(partid, 'Array multiplicity', 1)
-                        s3 = self.__insertChar(partid, 'Crystal type', 1) #LYSO
-                        s4 = self.__insertChar(partid, 'Reflector', idReflector[reflector])
-                        s5 = self.__insertChar(partid, 'Wrapping', idWrapping[wrapping])
-                        s6 = self.__insertChar(partid, 'X', x)
-                        s7 = self.__insertChar(partid, 'Y', y)
-                        s8 = self.__insertChar(partid, 'Z', z)
-                    if success and s1 and s2 and s3 and s4 and s5 and s6 and s7 and s8:
-                        self.commit()
-                else:
-                    self.rollback()
-            except:
+            success = self.__insertPart(partid, 'Crystal', producer)
+            if success:
+                s1 = self.__newActivity(partid, 'Crystal registration')
+                if s1:
+                    s2 = self.__insertChar(partid, 'Array multiplicity', 1)
+                    s3 = self.__insertChar(partid, 'Crystal type', 1) #LYSO
+                    s4 = self.__insertChar(partid, 'Reflector', idReflector[reflector])
+                    s5 = self.__insertChar(partid, 'Wrapping', idWrapping[wrapping])
+                    s6 = self.__insertChar(partid, 'X', x)
+                    s7 = self.__insertChar(partid, 'Y', y)
+                    s8 = self.__insertChar(partid, 'Z', z)
+            if success and s1 and s2 and s3 and s4 and s5 and s6 and s7 and s8:
+                self.commit()
+            else:
                 self.rollback()
         else:
             if not reflector in idReflector:
                 logging.error('Cannot find {} among reflectors'.format(reflector))
             if not wrapping in idWrapping:
                 logging.error('Cannot find {} among wrapping'.format(wrapping))
-                
+
+    def __activityDefinition(self, name, partType = None, workflow = None, workflowVersion = None,
+                             part = None):
+        actDef = -1
+        p = (name,)
+        sql = "SELECT ID FROM ACTIVITY_DEFINITION WHERE SHORTDESCRIPTION = %s "
+        if partType != None:
+            sql += "AND IDPART_DEFINITION = (SELECT ID FROM PART_DEFINITION WHERE "
+            sql += "SHORTDESCRIPTION = %s) "
+            p = p + (partType,)
+        elif part != None:
+            sql += "AND IDPART_DEFINITION = (SELECT IDDEFINITION FROM PART WHERE ID = %s) "
+            p = p + (part,)
+        if workflow == None:
+            sql += "AND IDWORKFLOW = (SELECT MAX(ID) FROM WORKFLOW)"
+        else:
+            sql += "AND IDWORKFLOW = (SELECT ID FROM WORKFLOW WHERE NAME = %s "
+            p = p + (workflow,)
+            if workflowVersion == None:
+                sql += "ORDER BY VERSION DESC LIMIT 1)"
+            else:
+                sql += "AND VERSION = %s)"
+                p = p + (workflowVersion,)
+        self._cursor.execute(sql, p)
+        record = self._cursor.fetchall()
+        if len(record) == 1:
+            actDef = record[0][0]
+        return actDef
+        
     def __newActivity(self, part, activity, start = None, stop = None, notes = None):
         ret = False
         # private method: there is a public method per concrete activity
         if self._user < 0:
             logging.error('User not defined...please declare it first...')
             return ret
-        actDef = -1
-        sql = "SELECT ID FROM ACTIVITY_DEFINITION WHERE SHORTDESCRIPTION = %s"
-        self._cursor.execute(sql, (activity,))
-        record = self._cursor.fetchall()
-        if len(record) == 1:
-            actDef = record[0][0]
+        actDef = self.__activityDefinition(activity, part = part)
         pattern = re.compile("^[0-9]+$")
         if start == None:
             start = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -225,10 +248,19 @@ class MaterMtd:
                 ret = True
             except mysql.connector.Error as error:
                 logging.error("Failed to insert record into ACTIVITY {}".format(error))
-                logging.error(sql)
+#                print(sql)
                 ret = False
         else:
             logging.error('Activity {} for part {} already in DB'.format(activity, part))
+        return ret
+
+    def __charvalueExists(self, tablename, idAct, idDef, value):
+        ret = False
+        sql = 'SELECT * FROM {} WHERE IDACTIVITY = %s AND IDDEFINITION = %s AND VALUE = %s'.format(tablename)
+        self._cursor.execute(sql, (idAct, idDef, value,))
+        record = self._cursor.fetchall()
+        if len(record) > 0:
+            ret = True
         return ret
 
     def __insertChar(self, part, charName, charValue):
@@ -251,11 +283,12 @@ class MaterMtd:
                 if len(record) == 1:                    
                     idAct = record[0][0]
                     sql = 'INSERT INTO {} VALUES (%s, %s, %s)'.format(table)
-                    self._cursor.execute(sql, (idAct,idChar,charValue,))
+                    if not self.__charvalueExists(table, idAct, idChar, charValue):
+                        self._cursor.execute(sql, (idAct,idChar,charValue,))
                     ret = True
         except mysql.connector.Error as error:
             logging.error("Failed to insert characteristic {} for part {}: {}".format(charName, part, error))
-            logging.error(sql)
+#            print(sql)
             ret = False
         return ret
             
