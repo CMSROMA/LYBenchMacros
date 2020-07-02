@@ -140,6 +140,13 @@ class MaterMtd:
             ret.append(rValue)
         cursor.close()
         return ret
+
+    def querySelect(self, sql, ptuple):
+        selectCursor = self._cnx.cursor()
+        selectCursor.execute(sql, ptuple)
+        record = selectCursor.fetchall()
+        selectCursor.close
+        return record
     
     def newLY(self, part, start = None, stop = None, notes = None, lyRaw = None,
               lyAbs = None, lyNorm = None, decayTime = None):
@@ -154,13 +161,13 @@ class MaterMtd:
         s1 = s2 = s3 = s4 = False
         if success:
             if lyRaw != None:
-                s1 = self.__insertChar(part, 'lyRaw', lyRaw)
+                s1 = self.__insertChar(part, 'lyRaw', lyRaw, start = start)
             if lyAbs != None:
-                s2 = self.__insertChar(part, 'lyAbs', lyAbs)
+                s2 = self.__insertChar(part, 'lyAbs', lyAbs, start = start)
             if lyNorm != None:
-                s3 = self.__insertChar(part, 'lyNorm', lyNorm)
+                s3 = self.__insertChar(part, 'lyNorm', lyNorm, start = start)
             if decayTime != None:
-                s4 = self.__insertChar(part, 'decayTime', decayTime)
+                s4 = self.__insertChar(part, 'decayTime', decayTime, start = start)
         if success and s1 and s2 and s3 and s4:
             self.commit()
         else:
@@ -263,7 +270,7 @@ class MaterMtd:
             ret = True
         return ret
 
-    def __insertChar(self, part, charName, charValue):
+    def __insertChar(self, part, charName, charValue, start = None):
         # private method called by newActivity
         ret = False
         sql = 'SELECT ID, IDACTIVITYDEFINITION, TABLE_NAME FROM CHARACTERISTIC_DEFINITION '
@@ -276,9 +283,14 @@ class MaterMtd:
                 actDef = record[0][1]
                 table  = record[0][2]
                 sql = "SELECT ID FROM ACTIVITY WHERE IDPART = %s AND IDACTIVITY = %s AND "
-                sql += "IDOUTCOME = (SELECT ID FROM POSSIBLE_OUTCOMES WHERE OUTCOME = 'Success') " 
-                sql += "ORDER BY START DESC LIMIT 1"
-                self._cursor.execute(sql, (part,actDef,))
+                sql += "IDOUTCOME = (SELECT ID FROM POSSIBLE_OUTCOMES WHERE OUTCOME = 'Success') "
+                ptuple = (part, actDef,)
+                if start != None:
+                    sql += "AND START = %s"
+                    ptuple = ptuple + (start,)
+                else:
+                    sql += "ORDER BY START DESC LIMIT 1"
+                self._cursor.execute(sql, ptuple)
                 record = self._cursor.fetchall()
                 if len(record) == 1:                    
                     idAct = record[0][0]
@@ -310,3 +322,51 @@ class MaterMtd:
             ret = False
         return ret
 
+    def parts(self, type):
+        sql = "SELECT P.ID FROM PART P JOIN PART_DEFINITION PD ON PD.ID = P.IDDEFINITION "
+        sql += "WHERE PD.SHORTDESCRIPTION = %s"
+        record = self.querySelect(sql, (type,))
+        ret = []
+        for r in record:
+            ret.append(r[0])
+        return ret
+
+class part:
+    _db = None
+    _id = ''
+    _type = ''
+    _location = ''
+    _model = ''
+    def __init__(self, db):
+        self._db = db
+
+    def __init__(self, db, id):
+        self._db = db
+        self.id(id)
+
+    def id(self):
+        return self._id
+
+    def id(self, id):
+        self._id = id
+        self.__retrieveInfo()
+
+    def type(self):
+        return self._type
+
+    def model(self):
+        return self._model
+
+    def location(self):
+        return self._location
+
+    def __retrieveInfo(self):
+        sql = "SELECT PD.SHORTDESCRIPTION, L.LOCATION, M.NAME FROM PART P JOIN PART_DEFINITION PD "
+        sql += "ON PD.ID = P.IDDEFINITION JOIN LOCATION L ON L.ID = P.IDLOCATION JOIN MODEL M ON "
+        sql += "M.ID = P.IDMODEL WHERE P.ID = %s"
+        record = self._db.querySelect(sql, (self._id,))
+        if len(record) > 0:
+            self._type     = record[0][0]
+            self._location = record[0][1]
+            self._model    = record[0][2]
+    
