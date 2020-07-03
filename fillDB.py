@@ -88,7 +88,6 @@ for xt,runs in measurements.items():
         runs=[ r['id'] for r in rr ]
         xtalID=int((xt.split('BAR'))[1])
         tag=rr[0]['tag']
-        logging.info(xt,tag,prod,geo,xtalID,runs,refRuns[day],ledRuns[day])
         f.insertMeas(xt,prod,geo,xtalID,runs,refRuns[day],ledRuns[day],tag)
 
 f.save()
