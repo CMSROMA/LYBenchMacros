@@ -304,7 +304,7 @@ class MaterMtd:
             ret = False
         return ret
             
-    def __insertPart(self, id, type, model, location = 'Segre', service = 'None'):
+    def __insertPart(self, barcode, parttype, model, location = 'Segre', service = 'None'):
         # private method: there is a public method per concrete part
         ret = False
         sql = 'INSERT INTO PART VALUES (%s, NULL, '
@@ -314,10 +314,10 @@ class MaterMtd:
         sql += '(SELECT MAX(ID) FROM WORKFLOW))'
         try:
             cursor = self._cnx.cursor()
-            cursor.execute(sql, (id, type, location, service, model,))
+            cursor.execute(sql, (barcode, parttype, location, service, model,))
             ret = True
         except mysql.connector.Error as error:
-            logging.error("Failed to insert part {}: {}".format(id, error))
+            logging.error("Failed to insert part {}: {}".format(barcode, error))
             logging.error(sql)
             ret = False
         return ret
@@ -331,34 +331,58 @@ class MaterMtd:
             ret.append(r[0])
         return ret
 
-class part:
+class Part:
     _db = None
     _id = ''
     _type = ''
     _location = ''
+    _service = ''
     _model = ''
-    def __init__(self, db):
-        self._db = db
 
-    def __init__(self, db, id):
+    def __init__(self, db, barcode = None, parttype = None, location = None, service = None,
+                 model = None):
         self._db = db
-        self.id(id)
+        if barcode != None:
+            self.setId(barcode)
+        if location != None:
+            self.setLocation(location)
+        if parttype != None:
+            self.setType(parttype)
+        if service != None:
+            self.setService(service)
+        if model != None:
+            self.setModel(model)
+        self.__retrieveInfo()
 
-    def id(self):
+    def getId(self):
         return self._id
 
-    def id(self, id):
-        self._id = id
-        self.__retrieveInfo()
+    def setId(self, barcode):
+        self._id = barcode
 
     def type(self):
         return self._type
 
+    def setType(self, parttype):
+        self._type = parttype
+
     def model(self):
         return self._model
 
+    def setModel(self, model):
+        self._model = model
+        
     def location(self):
         return self._location
+
+    def setLocation(self, location):
+        self._location = location
+
+    def service(self):
+        return self._service
+
+    def setService(self, service):
+        self._service = service
 
     def __retrieveInfo(self):
         sql = "SELECT PD.SHORTDESCRIPTION, L.LOCATION, M.NAME FROM PART P JOIN PART_DEFINITION PD "
@@ -369,4 +393,45 @@ class part:
             self._type     = record[0][0]
             self._location = record[0][1]
             self._model    = record[0][2]
-    
+
+    def preregister(self):
+        sql = "INSERT INTO PART VALUES (%s, NULL, (SELECT ID FROM PART_DEFINITION WHERE "
+        sql += "SHORTDESCRIPTION = %s), (SELECT ID FROM LOCATION WHERE LOCATION = %s), "
+        sql += "(SELECT ID FROM SERVICE WHERE SERVICE = %s), (SELECT ID FROM MODEL WHERE NAME = %s), "
+        sql += "NULL, NULL, (SELECT MAX(ID) FROM WORKFLOW))"
+        try:
+            self._db.cursor().execute(sql, (self._id, self._type, self._location, self._service, self._model,))
+            ret = True
+        except mysql.connector.Error as error:
+            logging.error("Failed to insert part {} into DB".format(self._id))
+            logging.error(sql)
+            ret = False
+        if ret == True:
+            sql = "INSERT INTO WORKFLOWSTATUS VALUES (%s, "
+            sql += "(SELECT ID FROM PLACES WHERE NAME = 'START' AND IDWORKFLOW = "
+            sql += "(SELECT MAX(ID) FROM WORKFLOW)))"
+            try:
+                self._db.cursor().execute(sql, (self._id,))
+                ret = True
+            except mysql.connector.Error as error:
+                logging.error("Failed to insert part {} into worlfow".format(self._id))
+                logging.error(sql)
+                ret = False
+        return ret
+            
+    """
+    def __retrieveActivities(self):
+        sql = "SELECT A.ID, AD.SHORTDESCRIPTION, A.START, A.STOP, O.OUTCOME, A.NOTES, U.USERNAME "
+        sql += "FROM ACTIVITY A JOIN ACTIVITY_DEFINITION AD ON AD.ID = A.IDACTIVITY JOIN "
+        sql += "POSSIBLE_OUTCOMES O ON O.ID = A.IDOUTCOME JOIN MATERUSERS.USER U ON U.ID = A.IDOPERATOR ";
+        sql += "WHERE IDPART = %s"
+        record = self._db.querySelect(sql, (self._id,))
+    """
+
+class Crystal(Part):
+    def __init__(self, db, barcode = None, producer = None):
+        super().__init__(db, barcode, parttype = 'Crystal', location = 'Segre', service = 'None',
+                         model = 'Producer_' + str(producer))
+        
+    def addToDb(self):
+        super().preregister()
