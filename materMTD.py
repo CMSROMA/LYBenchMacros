@@ -160,6 +160,8 @@ class MaterMtd:
                 
     def newLY(self, part, start = None, stop = None, notes = None, lyRaw = None,
               lyAbs = None, lyNorm = None, decayTime = None):
+        # important: new LY can be inserted without the need to update the workflowstatus
+        #            the only requirement is that the crystal has been already preregistered
         self.startTransaction()
 
         actDef = self.__activityDefinition('LY evaluation', part = part)
@@ -295,9 +297,9 @@ class MaterMtd:
         # private method called by newActivity
         ret = False
         sql = 'SELECT ID, IDACTIVITYDEFINITION, TABLE_NAME FROM CHARACTERISTIC_DEFINITION '
-        sql += 'WHERE SHORTNAME = %s'
+        sql += 'WHERE SHORTNAME = %s AND IDPARTDEFINITION = (SELECT IDDEFINITION FROM PART WHERE ID = %s)'
         try:
-            self._cursor.execute(sql, (charName,))
+            self._cursor.execute(sql, (charName, part,))
             record = self._cursor.fetchall()
             if len(record) == 1:
                 idChar = record[0][0]
@@ -473,8 +475,7 @@ class Crystal(Part):
     def register(self, notes, thickness):
         canDoRegistration = False
         r = self._db.listOfActiveTransitions(self._id)
-#        if r[0][0] == 'REGISTRATION':
-        if True:
+        if r[0][0] == 'REGISTRATION':
             success = True        
             part = super()._id
             actDef = self._db.querySelect("SELECT ID FROM ACTIVITY_DEFINITION WHERE SHORTDESCRIPTION = " +
@@ -497,4 +498,10 @@ class Crystal(Part):
                 sql = "UPDATE WORKFLOWSTATUS SET IDPLACE = %s WHERE IDPART = %s"
                 self._db.updateQuery(sql, (nextPlace, self._id))
                 self._db.commit()
+        
+        def newLY():
+            # for backward compatibility this method is just a call to the corresponding methid for
+            # materMTD
+            return self._db.newLY(self._id, start = start, stop = stop, notes = notes, lyRaw = lyRaw,
+                                  lyAbs = lyAbs, lyNorm = lyNorm, decayTime = decayTime)
         
