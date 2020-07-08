@@ -71,11 +71,17 @@ class MaterMtd:
             self._user = record[0][0]
         cursor.close()
 
+    def idOperator(self):
+        return self._user
+
     def activityDone(self, idPart, actDef, start, notes = None, idoperator = None):
         ret = False
-        sql = "SELECT ID FROM ACTIVITY WHERE IDPART = %s AND IDACTIVITY = %s AND START = %s "
-        ptuple = (idPart, actDef, start)
+        sql = "SELECT ID FROM ACTIVITY WHERE IDPART = %s AND IDACTIVITY = %s "
+        ptuple = (idPart, actDef,)
         t = list(ptuple)
+        if start != None:
+            sql += "AND START = %s "
+            t.append(start)
         if notes != None:
             sql += "AND NOTES = %s "
             t.append(notes)
@@ -147,7 +153,11 @@ class MaterMtd:
         record = selectCursor.fetchall()
         selectCursor.close
         return record
-    
+
+    def updateQuery(self, sql, ptuple):
+        updateCursor = self._cnx.cursor()
+        updateCursor.execute(sql, ptuple)
+                
     def newLY(self, part, start = None, stop = None, notes = None, lyRaw = None,
               lyAbs = None, lyNorm = None, decayTime = None):
         self.startTransaction()
@@ -222,12 +232,19 @@ class MaterMtd:
             else:
                 sql += "AND VERSION = %s)"
                 p = p + (workflowVersion,)
+        record = self.querySelect(sql, p)
+        return record[0][0]
+    
         self._cursor.execute(sql, p)
         record = self._cursor.fetchall()
         if len(record) == 1:
             actDef = record[0][0]
         return actDef
-        
+
+    # the following is a 'semiprivate' method used by other classes of the package
+    def _newActivity(self, part, activity, start = None, stop = None, notes = None):
+        return self.__newActivity(part, activity, start = start, stop = stop, notes = notes)
+    
     def __newActivity(self, part, activity, start = None, stop = None, notes = None):
         ret = False
         # private method: there is a public method per concrete activity
@@ -270,6 +287,10 @@ class MaterMtd:
             ret = True
         return ret
 
+    # semiprivate method
+    def _insertChar(self, part, charName, charValue, start = None):
+        return self.__insertChar(part, charName, charValue, start = None)
+    
     def __insertChar(self, part, charName, charValue, start = None):
         # private method called by newActivity
         ret = False
@@ -330,6 +351,19 @@ class MaterMtd:
         for r in record:
             ret.append(r[0])
         return ret
+
+    def listOfActiveTransitions(self, part):
+        sql = "SELECT T.NAME FROM WORKFLOWSTATUS WS JOIN PLACES P ON P.ID = WS.IDPLACE JOIN "
+        sql += "TRANSITIONS T ON T.ID = P.IDTRANSITION JOIN PART PRT ON PRT.ID = WS.IDPART "
+        sql += "WHERE IDPART = %s AND T.IDWORKFLOW = PRT.IDWORKFLOW"
+        return self.querySelect(sql, (part,))
+
+    def nextPlace(self, part):
+        sql = "SELECT T.IDPLACE FROM WORKFLOWSTATUS WS JOIN PLACES P ON P.ID = WS.IDPLACE JOIN "
+        sql += "TRANSITIONS T ON T.ID = P.IDTRANSITION JOIN PART PRT ON PRT.ID = WS.IDPART "
+        sql += "WHERE IDPART = %s AND T.IDWORKFLOW = PRT.IDWORKFLOW"
+        ret = self.querySelect(sql, (part,))
+        return ret[0][0]
 
 class Part:
     _db = None
@@ -435,3 +469,32 @@ class Crystal(Part):
         
     def addToDb(self):
         super().preregister()
+
+    def register(self, notes, thickness):
+        canDoRegistration = False
+        r = self._db.listOfActiveTransitions(self._id)
+#        if r[0][0] == 'REGISTRATION':
+        if True:
+            success = True        
+            part = super()._id
+            actDef = self._db.querySelect("SELECT ID FROM ACTIVITY_DEFINITION WHERE SHORTDESCRIPTION = " +
+                                          "'Crystal registration' AND IDWORKFLOW = " +
+                                          "(SELECT MAX(ID) FROM WORKFLOW)", ())
+            print('--- registration activity definition ID = {}'.format(actDef[0][0]))
+            self._db.startTransaction()
+            if not self._db.activityDone(self._id, actDef[0][0], None):
+                success = self._db._newActivity(self._id, 'Crystal registration', notes = notes)
+                print('--- registration activity inserted'.format(actDef[0][0]))
+            s1 = s2 = s3 = s4 = s5 = s6 = False
+            s1 = self._db._insertChar(self._id, 'Array multiplicity', 1)
+            s2 = self._db._insertChar(self._id, 'Crystal type', 1) # LYSO
+            s3 = self._db._insertChar(self._id, 'Reflector', 1)    # None
+            s4 = self._db._insertChar(self._id, 'X', 3.12)
+            s5 = self._db._insertChar(self._id, 'Y', thickness)
+            s6 = self._db._insertChar(self._id, 'Z', 57.0)        
+            if success and s1 and s2 and s3 and s4 and s5 and s6:
+                nextPlace = self._db.nextPlace(self._id)
+                sql = "UPDATE WORKFLOWSTATUS SET IDPLACE = %s WHERE IDPART = %s"
+                self._db.updateQuery(sql, (nextPlace, self._id))
+                self._db.commit()
+        
