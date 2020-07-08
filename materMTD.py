@@ -499,7 +499,8 @@ class Crystal(Part):
                 self._db.updateQuery(sql, (nextPlace, self._id))
                 self._db.commit()
         
-        def newLY():
+        def newLY(self, part, start = None, stop = None, notes = None, lyRaw = None,
+                  lyAbs = None, lyNorm = None, decayTime = None):
             # for backward compatibility this method is just a call to the corresponding methid for
             # materMTD
             return self._db.newLY(self._id, start = start, stop = stop, notes = notes, lyRaw = lyRaw,
