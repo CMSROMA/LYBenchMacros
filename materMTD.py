@@ -167,7 +167,8 @@ class MaterMtd:
         actDef = self.__activityDefinition('LY evaluation', part = part)
         success = False
         if self.activityDone(part, actDef, start, notes = None):
-            success = True
+            success = False
+            logging.error('LY evaluation activity already present for crystal {}'.format(part))
         else:
             success = self.__newActivity(part, 'LY evaluation', start, stop, notes)
         s1 = s2 = s3 = s4 = False
