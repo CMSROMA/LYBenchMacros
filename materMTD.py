@@ -375,6 +375,7 @@ class Part:
     _location = ''
     _service = ''
     _model = ''
+    _chars = []
 
     def __init__(self, db, barcode = None, parttype = None, location = None, service = None,
                  model = None):
@@ -421,6 +422,33 @@ class Part:
     def setService(self, service):
         self._service = service
 
+    def dump(self):
+        logging.info('---- {} ----'.format(self._id))
+        logging.info('     Type: {}  Model: {}  Location: {}'.format(self._type, self._model, self._location))
+
+    def getChars(self, charname = None):
+        sql = "SELECT DISTINCT TABLE_NAME FROM CHARACTERISTIC_DEFINITION WHERE IDPARTDEFINITION = "
+        sql += "(SELECT ID FROM PART_DEFINITION WHERE SHORTDESCRIPTION = %s)"
+        tbls = self._db.querySelect(sql, (self._type,))
+        for table in tbls:
+            sql = "SELECT CD.SHORTNAME, C.VALUE, CD.UNIT, CT.TYPE, AD.SHORTDESCRIPTION, A.START, "
+            sql += "U.USERNAME, O.OUTCOME, A.NOTES FROM " + table[0] + " C JOIN ACTIVITY A ON A.ID = "
+            sql += "C.IDACTIVITY JOIN ACTIVITY_DEFINITION AD ON AD.ID = A.IDACTIVITY JOIN "
+            sql += "CHARACTERISTIC_DEFINITION CD ON CD.ID = C.IDDEFINITION JOIN CHARACTERISTIC_TYPE CT "
+            sql += "ON CT.ID = CD.IDTYPE JOIN MATERUSERS.USER U ON U.ID = A.IDOPERATOR JOIN "
+            sql += "POSSIBLE_OUTCOMES O ON O.ID = A.IDOUTCOME WHERE A.IDPART = %s "
+            ptuple = (self._id,)
+            t = list(ptuple)
+            if charname != None:
+                sql += "AND CD.SHORTNAME = %s "
+                t.append(charname)
+            sql += "ORDER BY A.START DESC"
+            ptuple = tuple(t)
+            chars = self._db.querySelect(sql, ptuple)
+            if len(chars) > 0:
+                self._chars.append(chars)
+        return self._chars
+        
     def __retrieveInfo(self):
         sql = "SELECT PD.SHORTDESCRIPTION, L.LOCATION, M.NAME FROM PART P JOIN PART_DEFINITION PD "
         sql += "ON PD.ID = P.IDDEFINITION JOIN LOCATION L ON L.ID = P.IDLOCATION JOIN MODEL M ON "
