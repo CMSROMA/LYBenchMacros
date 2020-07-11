@@ -90,10 +90,16 @@ class MaterMtd:
             t.append(idoperator)
         ptuple = tuple(t)
         cursor = self.cursor()
-        cursor.execute(sql, ptuple)
-        record = cursor.fetchall()
-        if len(record) == 1:
-            ret = True
+        try:
+            cursor.execute(sql, ptuple)
+            record = cursor.fetchall()
+            if len(record) == 1:
+                ret = True
+        except mysql.connector.Error as error:
+            logging.error("Failed to look for activity {} on part {}".format(actDef, idPart))
+            logging.error(sql)
+            logging.error(ptuple)
+            ret = False            
         cursor.close()
         return ret
 
@@ -114,38 +120,6 @@ class MaterMtd:
                     value = rchar[0][2]
         cursor.close()
         return value
-
-    def chars(self, part, charName = None):
-        ret = []
-        cursor = self.cursor()
-        sql = "SELECT DISTINCT TABLE_NAME FROM CHARACTERISTIC_DEFINITION WHERE IDPARTDEFINITION = "
-        sql += "(SELECT IDDEFINITION FROM PART WHERE ID = %s)"
-        ptuple = (part,)
-        if charName != None:
-            sql += " AND SHORTNAME = %s"
-            l = list(ptuple)
-            l.append(charName)
-            ptuple = tuple(l)
-        cursor.execute(sql, ptuple)
-        record = cursor.fetchall()
-        for r in record:
-            tblName = r[0]
-            sql = "SELECT CD.SHORTNAME, AD.SHORTDESCRIPTION, A.START, U.USERNAME, O.OUTCOME, "
-            sql += "A.NOTES, T.*, CD.UNIT FROM " + tblName + " T JOIN ACTIVITY A ON "
-            sql += "A.ID = T.IDACTIVITY JOIN ACTIVITY_DEFINITION AD ON AD.ID = A.IDACTIVITY JOIN "
-            sql += "CHARACTERISTIC_DEFINITION CD ON CD.ID = T.IDDEFINITION JOIN "
-            sql += "MATERUSERS.USER U ON U.ID = A.IDOPERATOR JOIN POSSIBLE_OUTCOMES O ON "
-            sql += "O.ID = A.IDOUTCOME "
-            ptuple = ()
-            if charName != None:
-                sql += "WHERE CD.SHORTNAME = %s "
-                ptuple = (charName,)
-            sql += "ORDER BY START DESC"
-            cursor.execute(sql, ptuple)
-            rValue = cursor.fetchall()
-            ret.append(rValue)
-        cursor.close()
-        return ret
 
     def querySelect(self, sql, ptuple):
         selectCursor = self._cnx.cursor()
@@ -275,7 +249,6 @@ class MaterMtd:
                 ret = True
             except mysql.connector.Error as error:
                 logging.error("Failed to insert record into ACTIVITY {}".format(error))
-#                print(sql)
                 ret = False
         else:
             logging.error('Activity {} for part {} already in DB'.format(activity, part))
@@ -324,7 +297,6 @@ class MaterMtd:
                     ret = True
         except mysql.connector.Error as error:
             logging.error("Failed to insert characteristic {} for part {}: {}".format(charName, part, error))
-#            print(sql)
             ret = False
         return ret
             
@@ -459,13 +431,20 @@ class Part:
             self._location = record[0][1]
             self._model    = record[0][2]
 
-    def preregister(self):
-        sql = "INSERT INTO PART VALUES (%s, NULL, (SELECT ID FROM PART_DEFINITION WHERE "
+    def preregister(self, superpart = None):
+        sql = "INSERT INTO PART VALUES (%s, "
+        if superpart == None:
+            sql += "NULL"
+            ptuple = (self._id, self._type, self._location, self._service, self._model,)
+        else:
+            sql += "%s"
+            ptuple = (self._id, superpart, self._type, self._location, self._service, self._model,)
+        sql += ", (SELECT ID FROM PART_DEFINITION WHERE "
         sql += "SHORTDESCRIPTION = %s), (SELECT ID FROM LOCATION WHERE LOCATION = %s), "
         sql += "(SELECT ID FROM SERVICE WHERE SERVICE = %s), (SELECT ID FROM MODEL WHERE NAME = %s), "
         sql += "NULL, NULL, (SELECT MAX(ID) FROM WORKFLOW))"
         try:
-            self._db.cursor().execute(sql, (self._id, self._type, self._location, self._service, self._model,))
+            self._db.cursor().execute(sql, ptuple)
             ret = True
         except mysql.connector.Error as error:
             logging.error("Failed to insert part {} into DB".format(self._id))
@@ -484,22 +463,13 @@ class Part:
                 ret = False
         return ret
             
-    """
-    def __retrieveActivities(self):
-        sql = "SELECT A.ID, AD.SHORTDESCRIPTION, A.START, A.STOP, O.OUTCOME, A.NOTES, U.USERNAME "
-        sql += "FROM ACTIVITY A JOIN ACTIVITY_DEFINITION AD ON AD.ID = A.IDACTIVITY JOIN "
-        sql += "POSSIBLE_OUTCOMES O ON O.ID = A.IDOUTCOME JOIN MATERUSERS.USER U ON U.ID = A.IDOPERATOR ";
-        sql += "WHERE IDPART = %s"
-        record = self._db.querySelect(sql, (self._id,))
-    """
-
 class Crystal(Part):
-    def __init__(self, db, barcode = None, producer = None):
-        super().__init__(db, barcode, parttype = 'Crystal', location = 'Segre', service = 'None',
+    def __init__(self, db, barcode = None, producer = None, parttype = 'Crystal'):
+        super().__init__(db, barcode, parttype = parttype, location = 'Segre', service = 'None',
                          model = 'Producer_' + str(producer))
         
-    def addToDb(self):
-        super().preregister()
+    def addToDb(self, superpart = None):
+        super().preregister(superpart = superpart)
 
     def register(self, notes, thickness):
         canDoRegistration = False
@@ -507,14 +477,16 @@ class Crystal(Part):
         if r[0][0] == 'REGISTRATION':
             success = True        
             part = super()._id
+            activity = 'Crystal registration'
+            if self._type != 'Crystal':
+                activity = 'Crystal Array registration'
             actDef = self._db.querySelect("SELECT ID FROM ACTIVITY_DEFINITION WHERE SHORTDESCRIPTION = " +
-                                          "'Crystal registration' AND IDWORKFLOW = " +
+                                          "'" + activity + "' AND IDWORKFLOW = " +
                                           "(SELECT MAX(ID) FROM WORKFLOW)", ())
-            print('--- registration activity definition ID = {}'.format(actDef[0][0]))
             self._db.startTransaction()
             if not self._db.activityDone(self._id, actDef[0][0], None):
-                success = self._db._newActivity(self._id, 'Crystal registration', notes = notes)
-                print('--- registration activity inserted'.format(actDef[0][0]))
+                success = self._db._newActivity(self._id, activity, notes = notes)
+                logging.info('--- registration activity inserted for part {}'.format(self._id))
             s1 = s2 = s3 = s4 = s5 = s6 = False
             s1 = self._db._insertChar(self._id, 'Array multiplicity', 1)
             s2 = self._db._insertChar(self._id, 'Crystal type', 1) # LYSO
@@ -530,7 +502,7 @@ class Crystal(Part):
         
         def newLY(self, start = None, stop = None, notes = None, lyRaw = None,
                   lyAbs = None, lyNorm = None, decayTime = None):
-            # for backward compatibility this method is just a call to the corresponding methid for
+            # for backward compatibility this method is just a call to the corresponding method for
             # materMTD
             return self._db.newLY(self._id, start = start, stop = stop, notes = notes, lyRaw = lyRaw,
                                   lyAbs = lyAbs, lyNorm = lyNorm, decayTime = decayTime)
