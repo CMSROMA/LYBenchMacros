@@ -471,7 +471,7 @@ class Crystal(Part):
     def addToDb(self, superpart = None):
         super().preregister(superpart = superpart)
 
-    def register(self, notes, thickness):
+    def register(self, notes, thickness, length = 57.0):
         canDoRegistration = False
         r = self._db.listOfActiveTransitions(self._id)
         if r[0][0] == 'REGISTRATION':
@@ -493,7 +493,7 @@ class Crystal(Part):
             s3 = self._db._insertChar(self._id, 'Reflector', 1)    # None
             s4 = self._db._insertChar(self._id, 'X', 3.12)
             s5 = self._db._insertChar(self._id, 'Y', thickness)
-            s6 = self._db._insertChar(self._id, 'Z', 57.0)        
+            s6 = self._db._insertChar(self._id, 'Z', length)        
             if success and s1 and s2 and s3 and s4 and s5 and s6:
                 nextPlace = self._db.nextPlace(self._id)
                 sql = "UPDATE WORKFLOWSTATUS SET IDPLACE = %s WHERE IDPART = %s"
