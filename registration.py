@@ -1,15 +1,17 @@
 import materMTD
 import pandas as pd
+import os
+import sys
 
 import logging
 logging.basicConfig(format='%(asctime)s  %(filename)s  %(levelname)s: %(message)s',
                     level=logging.INFO)
 
-db = materMTD.MaterMtd('mtd', 'mtdpass', 'cmsrm-web.roma1.infn.it')
-db.operator('organtin')
+db = materMTD.MaterMtd('mtd', os.environ['MATER_PWD'], 'cmsrm-web.roma1.infn.it')
+db.operator(os.environ['MATER_USER'])
 
 # read the CSV file containing Barcode, Type, Comments and Producer
-data = pd.read_csv('toRegister.csv')
+data = pd.read_csv(sys.argv[1])
 
 # loop on rows
 for index, row in data.iterrows():
